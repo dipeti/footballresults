@@ -16,13 +16,15 @@ import java.util.List;
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder> {
 
     private static final String TAG = MatchAdapter.class.getSimpleName();
-    private int mNumberOfItems;
     private List<Match> mMatches;
 
 
     public MatchAdapter(List<Match> matches) {
         mMatches = matches;
-        mNumberOfItems = matches.size();
+    }
+
+    public void add(Match match){
+        mMatches.add(match);
     }
 
     @Override
@@ -42,7 +44,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
     @Override
     public int getItemCount() {
-        return mNumberOfItems;
+        return mMatches.size();
+    }
+
+    public void swapList(List<Match> matches) {
+        mMatches = matches;
     }
 
     class MatchViewHolder extends RecyclerView.ViewHolder {
