@@ -11,6 +11,10 @@ import android.widget.TextView;
 import com.dinya.peter.livefootballresults.R;
 import com.dinya.peter.livefootballresults.entity.Match;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -40,7 +44,15 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
     @Override
     public void onBindViewHolder(MatchViewHolder holder, int position) {
-        holder.listItemMatchView.setText(mMatches.get(position).toString());
+        Match match = mMatches.get(position);
+        holder.listItemHomeTeam.setText(match.getHomeTeam());
+        holder.listItemHomeScore.setText(String.valueOf(match.getHomeScore()));
+        holder.listItemAwayTeam.setText(match.getAwayTeam());
+        holder.listItemAwayScore.setText(String.valueOf(match.getAwayScore()));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String date = simpleDateFormat.format(match.getDate());
+
+        holder.listItemDate.setText(date);
     }
 
     @Override
@@ -48,18 +60,22 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         return mMatches.size();
     }
 
-    public void swapList(List<Match> matches) {
-        mMatches = matches;
-    }
 
     class MatchViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView listItemMatchView;
-        final ImageView listItemHomeLogoImageView;
+        final TextView listItemHomeTeam;
+        final TextView listItemHomeScore;
+        final TextView listItemAwayTeam;
+        final TextView listItemAwayScore;
+        final TextView listItemDate;
+
         MatchViewHolder(View itemView) {
             super(itemView);
-            listItemMatchView = (TextView) itemView.findViewById(R.id.tv_item_match);
-            listItemHomeLogoImageView = (ImageView) itemView.findViewById(R.id.logo_home);
+            listItemHomeTeam = (TextView) itemView.findViewById(R.id.list_item_tv_home_team);
+            listItemHomeScore = (TextView) itemView.findViewById(R.id.list_item_tv_home_score);
+            listItemAwayTeam  = (TextView) itemView.findViewById(R.id.list_item_tv_away_team);
+            listItemAwayScore = (TextView) itemView.findViewById(R.id.list_item_tv_away_score);
+            listItemDate = (TextView) itemView.findViewById(R.id.list_item_tv_match_date);
         }
     }
 }

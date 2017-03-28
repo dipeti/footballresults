@@ -12,6 +12,7 @@ import android.widget.Button;
 import com.dinya.peter.livefootballresults.entity.Match;
 import com.dinya.peter.livefootballresults.listener.EndlessRecyclerViewScrollListener;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
+import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,22 +25,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         mMatchesRecyclerView = (RecyclerView) findViewById(R.id.rv_my_matches);
         Button mButton = (Button) findViewById(R.id.bt_add_more);
 
-
-
-        final List<Match> matches = new ArrayList<>();
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, 0));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-        matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
+        final List<Match> matches = JSONParserUtils.getMatches(true);
         final MatchAdapter matchAdapter = new MatchAdapter(matches);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
@@ -49,18 +40,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 final int count = matchAdapter.getItemCount();
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-                matches.add(new Match("MAN UTD", "CHELSEA", 1, matches.size()+1));
-
+                matches.addAll(JSONParserUtils.getMatches(false));
                 view.post(new Runnable() {
                     @Override
                     public void run() {
