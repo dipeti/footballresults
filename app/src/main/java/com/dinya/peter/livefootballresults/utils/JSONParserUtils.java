@@ -47,7 +47,7 @@ public class JSONParserUtils {
             }          
         }
         catch (JSONException ex){
-            Log.e("JSONParserUtil", "Problem parsing the matches JSON results", ex);
+            Log.e("JSONParserUtil", "Problem parsing the matches JSON results: " + jsonString, ex);
 
         } catch (ParseException e) {
             e.printStackTrace();

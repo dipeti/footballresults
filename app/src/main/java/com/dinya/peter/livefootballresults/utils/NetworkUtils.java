@@ -29,11 +29,16 @@ public class NetworkUtils {
     private static final String BASE_API_URL = "http://api.football-data.org";
     private static final String FIXTURES_API_URL = "v1/competitions/426/fixtures";
 
+    /**
+     * Parameters
+     */
     private static final int UPCOMING_DAYS = 7;
     private static final String UPCOMING_DAYS_VALUE = "n" + UPCOMING_DAYS ;
     private static final String TIMEFRAME_PARAM = "timeFrame";
 
-
+    /**
+     * Builds a URL for querying the upcoming matches
+     */
     public static URL buildUpcomingMatchesURL(){
         Uri queryURi = Uri.parse(BASE_API_URL)
                 .buildUpon()
