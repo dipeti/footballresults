@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dinya.peter.livefootballresults.async.MatchLoader;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.entity.Match;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView  mMatchesRecyclerView;
     MatchAdapter mMatchAdapter;
     private SQLiteDatabase mDb;
+    private LoaderManager mLoaderManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,16 +74,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TestUtils.insertFakeData(mDb); }
+                mLoaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID,null,MainActivity.this).forceLoad();
+            }
         });
 
-            LoaderManager loaderManager = getLoaderManager();
-            loaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID, null, this);
+            mLoaderManager = getLoaderManager();
+            mLoaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID, null, this);
             DbHelper dbHelper = new DbHelper(this);
             mDb = dbHelper.getWritableDatabase();
 
         TestUtils.insertFakeData(mDb);
         Cursor cursor = getAllTeams();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
+                ContentValues[] values =  JSONParserUtils.getTeams(result);
+                Log.d("ASDASDADSADASASDAS", "ASDADSASDASD");
+                Log.d("ASDASDADSADASASDAS", getContentResolver().insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,values[0]).toString());
+            }
+        }).start();
     }
 
     /**
@@ -91,36 +103,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<List<Match>> onCreateLoader(int id, Bundle args) {
-      return new AsyncTaskLoader<List<Match>>(this) {
-          List<Match> result;
-          @Override
-          protected void onStartLoading() {
-              super.onStartLoading();
-              if(null != result){
-                  deliverResult(result);
-              } else if(NetworkUtils.isConnected(getContext())) {
-                  forceLoad();
-              } else{
-                  Toast.makeText(getContext(),"No internet connection!", Toast.LENGTH_LONG).show();
-              }
-
-          }
-
-          @Override
-          public void deliverResult(List<Match> data) {
-              result = data;
-              super.deliverResult(data);
-          }
-
-          @Override
-          public List<Match> loadInBackground() {
-              URL url = NetworkUtils.buildUpcomingMatchesURL();
-              String response = NetworkUtils.getResponseFromURL(url);
-              return JSONParserUtils.getMatches(response);
-          }
-      };
+        return new MatchLoader(this);
     }
-
     @Override
     public void onLoadFinished(Loader<List<Match>> loader, List<Match> data) {
         mMatchAdapter.swap(data);

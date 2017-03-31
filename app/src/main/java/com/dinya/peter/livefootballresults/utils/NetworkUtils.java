@@ -27,7 +27,8 @@ public class NetworkUtils {
      * URLs
      */
     private static final String BASE_API_URL = "http://api.football-data.org";
-    private static final String FIXTURES_API_URL = "v1/competitions/426/fixtures";
+    private static final String FIXTURES_API_PATH = "v1/competitions/426/fixtures";
+    private static final String TEAMS_API_PATH = "v1/competitions/426/teams";
 
     /**
      * Parameters
@@ -42,8 +43,24 @@ public class NetworkUtils {
     public static URL buildUpcomingMatchesURL(){
         Uri queryURi = Uri.parse(BASE_API_URL)
                 .buildUpon()
-                .appendEncodedPath(FIXTURES_API_URL)
+                .appendEncodedPath(FIXTURES_API_PATH)
                 .appendQueryParameter(TIMEFRAME_PARAM,UPCOMING_DAYS_VALUE)
+                .build();
+        try {
+            URL url = new URL(queryURi.toString());
+            Log.v(TAG, "Converted URL: " + url);
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Cannot convert Uri to URL: " + queryURi.toString());
+            return null;
+        }
+    }
+
+    public static URL buildTeamsURL(){
+        Uri queryURi = Uri.parse(BASE_API_URL)
+                .buildUpon()
+                .appendEncodedPath(TEAMS_API_PATH)
                 .build();
         try {
             URL url = new URL(queryURi.toString());
@@ -73,6 +90,7 @@ public class NetworkUtils {
         try {
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestProperty("X-Auth-Token","9b027c0d47644438a70d9e3be9dcc9ee");
             httpURLConnection.connect();
 
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()){

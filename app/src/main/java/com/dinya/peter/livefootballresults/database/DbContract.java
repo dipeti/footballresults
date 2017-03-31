@@ -1,11 +1,22 @@
 package com.dinya.peter.livefootballresults.database;
 
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class DbContract {
 
+    public static final String AUTHORITY = "com.dinya.peter.livefootballresults";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+
+    public static final String PATH_GAMES = "games";
+    public static final String PATH_UPCOMING_GAMES = "games/upcoming";
+    public static final String PATH_FAVORITE_GAMES = "games/favorite";
+    public static final String PATH_TEAMS = "teams";
+
     public static final class TeamEntry implements BaseColumns{
+        public static final Uri CONTENT_URI_TEAMS = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEAMS).build();
+
         public static final String TABLE_NAME = "teams";
         public static final String COLUMN_TEAM_NAME = "teamName";
         public static final String COLUMN_TEAM_CODE = "teamCode";
@@ -13,6 +24,8 @@ public class DbContract {
     }
 
     public static final class GameEntry implements BaseColumns{
+        public static final Uri CONTENT_URI_GAMES = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAMES).build();
+
         public static final String TABLE_NAME = "games";
         public static final String COLUMN_HOME_ID = "homeId";
         public static final String COLUMN_AWAY_ID = "awayId";
