@@ -1,5 +1,6 @@
 package com.dinya.peter.livefootballresults.utils;
 
+import android.nfc.Tag;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -23,17 +24,22 @@ public class JSONParserUtils {
     private JSONParserUtils() {
     }
 
-    public static List<Match> getMatches(boolean elso){
+    public static List<Match> getMatches(String jsonString){
         ArrayList<Match> matches = new ArrayList<>();
         try {
-            JSONObject baseJsonResponse = new JSONObject(elso ? SAMPLE_JSON : SAMPLE_JSON2);
+            JSONObject baseJsonResponse = new JSONObject(jsonString);
             JSONArray matchesArray = baseJsonResponse.getJSONArray("fixtures");
             for (int i = 0; i < matchesArray.length(); i++) {
                 JSONObject matchJsonObject = matchesArray.getJSONObject(i);
                 String homeTeam  = matchJsonObject.getString("homeTeamName");
                 String awayTeam  = matchJsonObject.getString("awayTeamName");
-                int homeScore = matchJsonObject.getJSONObject("result").getInt("goalsHomeTeam");
-                int awayScore = matchJsonObject.getJSONObject("result").getInt("goalsAwayTeam");
+                boolean finished = matchJsonObject.getString("status").equals("FINISHED");
+                int homeScore = -1, awayScore = -1;
+                if (finished)
+                {
+                    homeScore = matchJsonObject.getJSONObject("result").getInt("goalsHomeTeam");
+                    awayScore = matchJsonObject.getJSONObject("result").getInt("goalsAwayTeam");
+                }
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
                 Date date = simpleDateFormat.parse(matchJsonObject.getString("date"));
                 Match match = new Match(homeTeam,awayTeam, homeScore,awayScore,date);

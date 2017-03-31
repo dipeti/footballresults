@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,9 +29,12 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         mMatches = matches;
     }
 
-    public void add(Match match){
-        mMatches.add(match);
+    public void swap(List<Match> matches)
+    {
+        mMatches.addAll(matches);
+        notifyDataSetChanged();
     }
+
 
     @Override
     public MatchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,9 +50,9 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     public void onBindViewHolder(MatchViewHolder holder, int position) {
         Match match = mMatches.get(position);
         holder.listItemHomeTeam.setText(match.getHomeTeam());
-        holder.listItemHomeScore.setText(String.valueOf(match.getHomeScore()));
+        holder.listItemHomeScore.setText(0 <= match.getHomeScore() ? String.valueOf(match.getHomeScore()) : "");
         holder.listItemAwayTeam.setText(match.getAwayTeam());
-        holder.listItemAwayScore.setText(String.valueOf(match.getAwayScore()));
+        holder.listItemAwayScore.setText(0 <= match.getHomeScore()? String.valueOf(match.getAwayScore()) : "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         String date = simpleDateFormat.format(match.getDate());
 
