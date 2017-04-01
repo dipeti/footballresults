@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class ResultsContentProvider extends ContentProvider {
@@ -21,6 +22,26 @@ public class ResultsContentProvider extends ContentProvider {
 
     public static final int TEAMS = 200;
     public static final int TEAM_WITH_ID = 201;
+    private static final String TAG = ResultsContentProvider.class.getSimpleName();
+
+    private static final String GAME_SELECT_ARGS =
+            DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_HOME_TEAM +  ", " +
+                    DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_AWAY_TEAM + ", " +
+                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_HOME_SCORE + ", " +
+                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_SCORE + ", " +
+                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE;
+
+    private static final String SELECT_GAMES_JOINED_ON_TEAMS =
+                            "SELECT " + GAME_SELECT_ARGS +
+                            " FROM " + DbContract.GameEntry.TABLE_NAME +
+                            " INNER JOIN " + DbContract.TeamEntry.TABLE_NAME + " AS " + DbContract.TeamEntry.ALIAS_TABLE_FIRST + " ON " +
+                            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_HOME_ID + " = " +
+                            DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry._ID +
+                            " INNER JOIN " + DbContract.TeamEntry.TABLE_NAME + " AS " + DbContract.TeamEntry.ALIAS_TABLE_SECOND + " ON " +
+                            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_ID + " = " +
+                            DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID +
+                                    " ORDER BY " + DbContract.GameEntry.COLUMN_DATE +" ASC" +  " ;";
+
 
     private static UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -47,7 +68,22 @@ public class ResultsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        Cursor cursorToReturn;
+        switch (match){
+            case TEAMS:
+                cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs, null, null, sortOrder);
+                break;
+            case GAMES:
+                cursorToReturn = db.rawQuery(SELECT_GAMES_JOINED_ON_TEAMS,selectionArgs);
+                Log.d(TAG, "query: " + SELECT_GAMES_JOINED_ON_TEAMS);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri.toString());
+        }
+        cursorToReturn.setNotificationUri(getContext().getContentResolver(),uri);
+        return cursorToReturn;
     }
 
     @Nullable
@@ -62,14 +98,22 @@ public class ResultsContentProvider extends ContentProvider {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
         Uri uriToReturn;
-
+        long id;
         switch (match){
             case TEAMS:
-                long id = db.insert(DbContract.TeamEntry.TABLE_NAME,null, values);
+                id = db.insertWithOnConflict(DbContract.TeamEntry.TABLE_NAME,null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 if (id>0){
                     uriToReturn = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS, id);
                 } else {
                    throw new SQLException("Failed to insert row: " + uri);
+                }
+                break;
+            case GAMES:
+                 id = db.insertWithOnConflict(DbContract.GameEntry.TABLE_NAME,null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                if (id>0){
+                    uriToReturn = ContentUris.withAppendedId(DbContract.GameEntry.CONTENT_URI_GAMES, id);
+                } else {
+                    throw new SQLException("Failed to insert row: " + uri);
                 }
                 break;
             default:

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "results.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DbHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -20,6 +20,7 @@ public class DbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_TEAMS_TABLE = "CREATE TABLE " + DbContract.TeamEntry.TABLE_NAME + " (" +
                 DbContract.TeamEntry._ID + " INTEGER PRIMARY KEY," + // AUTOINCREMENT is not needed, the keys provided by the WebAPI are used.
                 DbContract.TeamEntry.COLUMN_TEAM_NAME + " TEXT NOT NULL, " +
+                DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " TEXT NOT NULL, " +
                 DbContract.TeamEntry.COLUMN_TEAM_CODE + " TEXT NOT NULL, " +
                 DbContract.TeamEntry.COLUMN_TEAM_VALUE + " INTEGER DEFAULT 0 " +
                 "); ";

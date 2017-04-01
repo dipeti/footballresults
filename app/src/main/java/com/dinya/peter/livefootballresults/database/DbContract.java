@@ -19,8 +19,15 @@ public class DbContract {
 
         public static final String TABLE_NAME = "teams";
         public static final String COLUMN_TEAM_NAME = "teamName";
+        public static final String COLUMN_TEAM_SHORT_NAME = "teamShortName";
         public static final String COLUMN_TEAM_CODE = "teamCode";
         public static final String COLUMN_TEAM_VALUE = "teamValue";
+
+        public static final String ALIAS_TABLE_FIRST = "t1";
+        public static final String ALIAS_TABLE_SECOND = "t2";
+
+        public static final String ALIAS_HOME_TEAM = "homeTeam";
+        public static final String ALIAS_AWAY_TEAM = "awayTeam";
     }
 
     public static final class GameEntry implements BaseColumns{
@@ -38,6 +45,9 @@ public class DbContract {
         public static final String COLUMN_DRAW_ODDS = "drawOdds";
         public static final String COLUMN_AWAY_ODDS = "awayOdds";
         public static final String COLUMN_FAVORITE = "favorite";
+
+        public static final String ALIAS_TABLE_FIRST = "g1";
+        public static final String ALIAS_TABLE_SECOND = "g2";
 
     }
 

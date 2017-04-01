@@ -2,6 +2,7 @@ package com.dinya.peter.livefootballresults;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Loader;
 import android.database.Cursor;
@@ -34,9 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Match>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int UPCOMING_MATCHES_LOADER_ID = 1;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView  mMatchesRecyclerView;
     MatchAdapter mMatchAdapter;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mMatchesRecyclerView = (RecyclerView) findViewById(R.id.rv_my_matches);
         Button mButton = (Button) findViewById(R.id.bt_add_more);
 
-        mMatchAdapter = new MatchAdapter(new ArrayList<Match>());
+        mMatchAdapter = new MatchAdapter();
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
         mMatchesRecyclerView.setAdapter(mMatchAdapter);
@@ -74,7 +76,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLoaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID,null,MainActivity.this).forceLoad();
+                Cursor cursor = getContentResolver().query(DbContract.TeamEntry.CONTENT_URI_TEAMS,null,null,null,null);
+                while (cursor.moveToNext()){
+                    Log.d(TAG, "onCreate: " + cursor.getString(0) + " - " + cursor.getString(1));
+                }
+                cursor.close();
             }
         });
 
@@ -83,17 +89,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             DbHelper dbHelper = new DbHelper(this);
             mDb = dbHelper.getWritableDatabase();
 
-        TestUtils.insertFakeData(mDb);
-        Cursor cursor = getAllTeams();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
-                ContentValues[] values =  JSONParserUtils.getTeams(result);
-                Log.d("ASDASDADSADASASDAS", "ASDADSASDASD");
-                Log.d("ASDASDADSADASASDAS", getContentResolver().insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,values[0]).toString());
-            }
-        }).start();
+        //TestUtils.insertFakeData(mDb);
+            // TODO: inserts all the teams.
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
+//                ContentValues[] values =  JSONParserUtils.getTeams(result);
+//                ContentResolver resolver = getContentResolver();
+//                if (null != values){
+//                    for (ContentValues value : values){
+//                        resolver.insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,value);
+//                    }
+//                }
+//
+//
+//            }
+//        }).start();
     }
 
     /**
@@ -102,20 +114,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * ------------------
      */
     @Override
-    public Loader<List<Match>> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new MatchLoader(this);
     }
+
     @Override
-    public void onLoadFinished(Loader<List<Match>> loader, List<Match> data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mMatchAdapter.swap(data);
     }
 
+
     @Override
-    public void onLoaderReset(Loader<List<Match>> loader) {
-        mMatchAdapter.swap(new ArrayList<Match>());
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMatchAdapter.swap(null);
     }
 
-    public Cursor getAllTeams() {
-        return mDb.query(DbContract.TeamEntry.TABLE_NAME,null,null,null,null,null, DbContract.TeamEntry.COLUMN_TEAM_NAME);
-    }
 }
