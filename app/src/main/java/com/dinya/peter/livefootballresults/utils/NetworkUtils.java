@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -44,7 +45,7 @@ public class NetworkUtils {
         Uri queryURi = Uri.parse(BASE_API_URL)
                 .buildUpon()
                 .appendEncodedPath(FIXTURES_API_PATH)
-                .appendQueryParameter(TIMEFRAME_PARAM,UPCOMING_DAYS_VALUE)
+                .appendQueryParameter(TIMEFRAME_PARAM, UPCOMING_DAYS_VALUE)
                 .build();
         try {
             URL url = new URL(queryURi.toString());

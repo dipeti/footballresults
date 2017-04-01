@@ -58,8 +58,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         int homeScore = mGames.getInt(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_HOME_SCORE));
         int awayScore = mGames.getInt(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_AWAY_SCORE));
         String dateString = mGames.getString(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_DATE));
-        SimpleDateFormat fromFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        // Wed Apr 05 18:45:00 GMT+00:00 2017
+        SimpleDateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+
         try {
             Date date = fromFormat.parse(dateString);
             SimpleDateFormat toFormat = new SimpleDateFormat("HH:mm - d MMM yyyy");

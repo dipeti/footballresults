@@ -40,7 +40,7 @@ public class ResultsContentProvider extends ContentProvider {
                             " INNER JOIN " + DbContract.TeamEntry.TABLE_NAME + " AS " + DbContract.TeamEntry.ALIAS_TABLE_SECOND + " ON " +
                             DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_ID + " = " +
                             DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID +
-                                    " ORDER BY " + DbContract.GameEntry.COLUMN_DATE +" ASC" +  " ;";
+                                    " ORDER BY " + DbContract.GameEntry.TABLE_NAME+ "." + DbContract.GameEntry.COLUMN_DATE +" ASC" +  " ;";
 
 
     private static UriMatcher sUriMatcher = buildUriMatcher();

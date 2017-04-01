@@ -89,7 +89,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             DbHelper dbHelper = new DbHelper(this);
             mDb = dbHelper.getWritableDatabase();
 
-        //TestUtils.insertFakeData(mDb);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildUpcomingMatchesURL());
+//                ContentValues[] values =  JSONParserUtils.getGames(result);
+//                ContentResolver resolver = getContentResolver();
+//                if (null != values){
+//                    for (ContentValues value : values){
+//                        resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
+//                    }
+//                }
+//            }
+//        }).start();
             // TODO: inserts all the teams.
 //        new Thread(new Runnable() {
 //            @Override
