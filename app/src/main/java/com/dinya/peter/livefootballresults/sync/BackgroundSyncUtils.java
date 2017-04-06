@@ -12,9 +12,6 @@ import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BackgroundSyncUtils {

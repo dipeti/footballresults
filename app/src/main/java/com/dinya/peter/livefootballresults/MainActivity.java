@@ -1,18 +1,12 @@
 package com.dinya.peter.livefootballresults;
 
 import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.nfc.Tag;
-import android.support.v4.util.ArrayMap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,28 +14,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.dinya.peter.livefootballresults.async.MatchLoader;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.database.DbHelper;
-import com.dinya.peter.livefootballresults.entity.Match;
-import com.dinya.peter.livefootballresults.entity.Team;
-import com.dinya.peter.livefootballresults.listener.EndlessRecyclerViewScrollListener;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
-import com.dinya.peter.livefootballresults.utils.TestUtils;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
