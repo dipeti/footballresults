@@ -45,7 +45,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int UPCOMING_MATCHES_LOADER_ID = 1;
+    private static final int UPCOMING_GAMES_LOADER_ID = 1;
+    private static final int FINISHED_GAMES_LOADER_ID = 2;
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView  mMatchesRecyclerView;
@@ -81,19 +82,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //
 //            }
 //        });
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Cursor cursor = getContentResolver().query(DbContract.TeamEntry.CONTENT_URI_TEAMS,null,null,null,null);
-                while (cursor.moveToNext()){
-                    Log.d(TAG, "onCreate: " + cursor.getString(0) + " - " + cursor.getString(1));
-                }
-                cursor.close();
+                mLoaderManager.initLoader(FINISHED_GAMES_LOADER_ID,null,MainActivity.this);
             }
         });
 
             mLoaderManager = getLoaderManager();
-            mLoaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID, null, this);
+            mLoaderManager.initLoader(UPCOMING_GAMES_LOADER_ID, null, this);
             DbHelper dbHelper = new DbHelper(this);
             mDb = dbHelper.getWritableDatabase();
         if(NetworkUtils.isConnected(this))
@@ -108,9 +106,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] selectionArgs = DbContract.getCurrentDateSelectionArgs();
-        Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-        return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_GAMES,null, null, selectionArgs,null);
+        String[] selectionArgs;
+        switch (id){
+            case UPCOMING_GAMES_LOADER_ID:
+                selectionArgs = DbContract.getCurrentDateSelectionArgs();
+                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
+                return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
+            case FINISHED_GAMES_LOADER_ID:
+                selectionArgs = DbContract.getCurrentDateSelectionArgs();
+                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
+                return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
     }
 
     @Override

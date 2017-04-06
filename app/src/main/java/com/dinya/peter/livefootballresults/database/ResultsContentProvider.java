@@ -18,7 +18,8 @@ public class ResultsContentProvider extends ContentProvider {
     public static final int GAMES = 100;
     public static final int GAME_WITH_ID = 101;
     public static final int GAMES_UPCOMING = 102;
-    public static final int GAMES_FAVORITE = 103;
+    public static final int GAMES_FINISHED = 103;
+    public static final int GAMES_FAVORITE = 104;
 
     public static final int TEAMS = 200;
     public static final int TEAM_WITH_ID = 201;
@@ -48,7 +49,7 @@ public class ResultsContentProvider extends ContentProvider {
                     BASE_SELECT_GAMES_JOINED_ON_TEAMS +
                     SELECTION_ARGS_UPCOMING_GAMES +
                     ORDER_BY_DATE_ASC;
-    private static final String SELECT_PAST_GAMES =
+    private static final String SELECT_FINISHED_GAMES =
                     BASE_SELECT_GAMES_JOINED_ON_TEAMS +
                     SELECTION_ARGS_PAST_GAMES +
                     ORDER_BY_DATE_ASC;
@@ -60,8 +61,9 @@ public class ResultsContentProvider extends ContentProvider {
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_TEAMS + "/#", TEAM_WITH_ID);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES, GAMES);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/#", GAME_WITH_ID);
-        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_UPCOMING_GAMES, GAMES_UPCOMING);
-        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_FAVORITE_GAMES, GAMES_FAVORITE);
+        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_UPCOMING_GAMES, GAMES_UPCOMING);
+        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FINISHED_GAMES, GAMES_FINISHED);
+        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FAVORITE_GAMES, GAMES_FAVORITE);
 
         return uriMatcher;
     }
@@ -84,11 +86,18 @@ public class ResultsContentProvider extends ContentProvider {
             case TEAMS:
                 cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs, null, null, sortOrder);
                 break;
-            case GAMES:
+            case GAMES_UPCOMING:
                 if (null == selectionArgs){
                     throw new SQLException("SelectionArgs is required to this Uri: " + uri);
                 }
                 cursorToReturn = db.rawQuery(SELECT_UPCOMING_GAMES,selectionArgs);
+                Log.d(TAG, "query: " + SELECT_UPCOMING_GAMES);
+                break;
+            case GAMES_FINISHED:
+                if (null == selectionArgs){
+                    throw new SQLException("SelectionArgs is required to this Uri: " + uri);
+                }
+                cursorToReturn = db.rawQuery(SELECT_FINISHED_GAMES,selectionArgs);
                 Log.d(TAG, "query: " + SELECT_UPCOMING_GAMES);
                 break;
             default:

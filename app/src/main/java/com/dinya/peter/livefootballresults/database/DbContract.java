@@ -14,8 +14,9 @@ public class DbContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     public static final String PATH_GAMES = "games";
-    public static final String PATH_UPCOMING_GAMES = "games/upcoming";
-    public static final String PATH_FAVORITE_GAMES = "games/favorite";
+    public static final String PATH_UPCOMING_GAMES = "upcoming";
+    public static final String PATH_FINISHED_GAMES = "finished";
+    public static final String PATH_FAVORITE_GAMES = "favorite";
     public static final String PATH_TEAMS = "teams";
 
 
@@ -40,6 +41,8 @@ public class DbContract {
 
     public static final class GameEntry implements BaseColumns{
         public static final Uri CONTENT_URI_GAMES = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAMES).build();
+        public static final Uri CONTENT_URI_UPCOMING_GAMES = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAMES).appendPath(PATH_UPCOMING_GAMES).build();
+        public static final Uri CONTENT_URI_FINISHED_GAMES = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAMES).appendPath(PATH_FINISHED_GAMES).build();
 
         public static final String TABLE_NAME = "games";
         public static final String COLUMN_HOME_ID = "homeId";

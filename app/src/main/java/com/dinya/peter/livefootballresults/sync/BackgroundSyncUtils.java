@@ -47,9 +47,7 @@ public class BackgroundSyncUtils {
             public void run() {
                 try{
                     Log.d(TAG, "syncGames running....");
-                    Cursor cursorGames = context.getContentResolver().query(DbContract.GameEntry.CONTENT_URI_GAMES,null,null,null,null);
                     startSyncGames(context);
-                    cursorGames.close();
                 } catch (NullPointerException ex){
                     ex.printStackTrace();
                 }
