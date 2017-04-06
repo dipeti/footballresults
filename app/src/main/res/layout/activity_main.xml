@@ -4,20 +4,35 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dinya.peter.livefootballresults.MainActivity"
     android:orientation="vertical">
-    <Button
-        android:id="@+id/bt_add_more"
+    <!--<Button-->
+        <!--android:id="@+id/bt_add_more"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Click"-->
+        <!--/>-->
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Click"
+        style="@style/CategoryTab"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_my_matches"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+        <!--<android.support.v4.view.PagerTabStrip-->
+            <!--android:id="@+id/pager_header"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:paddingBottom="4dp"-->
+            <!--android:paddingTop="4dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+        <!--</android.support.v4.view.PagerTabStrip>-->
+    </android.support.v4.view.ViewPager>
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/rv_my_matches"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 </LinearLayout>
