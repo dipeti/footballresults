@@ -12,6 +12,11 @@ import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class BackgroundSyncUtils {
     private static final String TAG = BackgroundSyncUtils.class.getSimpleName();
 
@@ -68,10 +73,14 @@ public class BackgroundSyncUtils {
     }
 
     synchronized private static void startSyncGames(Context context) {
-        String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildUpcomingMatchesURL());
-        ContentValues[] values =  JSONParserUtils.getGames(result);
+        String upcomingResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildUpcomingMatchesURL());
+        String pastResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildFinishedMatchesURL());
+        List<ContentValues> values =  JSONParserUtils.getGames(upcomingResult);
+        List<ContentValues> pastValues = JSONParserUtils.getGames(pastResult);
+        if (null !=values && null != pastValues)
+            values.addAll(pastValues);
         ContentResolver resolver = context.getContentResolver();
-        if (null != values && 0 != values.length){
+        if (null != values && 0 != values.size()){
             for (ContentValues value : values){
             resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
             }
@@ -80,9 +89,9 @@ public class BackgroundSyncUtils {
 
     private static void startSyncTeams(Context context) {
         String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
-        ContentValues[] values =  JSONParserUtils.getTeams(result);
+        List<ContentValues> values =  JSONParserUtils.getTeams(result);
         ContentResolver resolver = context.getContentResolver();
-                if (null != values && 0 != values.length){
+                if (null != values && 0 != values.size()){
                     for (ContentValues value : values){
                         resolver.insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,value);
                     }

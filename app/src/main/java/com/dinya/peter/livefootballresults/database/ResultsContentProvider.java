@@ -31,7 +31,7 @@ public class ResultsContentProvider extends ContentProvider {
                     DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_SCORE + ", " +
                     DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE;
 
-    private static final String SELECT_GAMES_JOINED_ON_TEAMS =
+    private static final String BASE_SELECT_GAMES_JOINED_ON_TEAMS =
                             "SELECT " + GAME_SELECT_ARGS +
                             " FROM " + DbContract.GameEntry.TABLE_NAME +
                             " INNER JOIN " + DbContract.TeamEntry.TABLE_NAME + " AS " + DbContract.TeamEntry.ALIAS_TABLE_FIRST + " ON " +
@@ -39,10 +39,19 @@ public class ResultsContentProvider extends ContentProvider {
                             DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry._ID +
                             " INNER JOIN " + DbContract.TeamEntry.TABLE_NAME + " AS " + DbContract.TeamEntry.ALIAS_TABLE_SECOND + " ON " +
                             DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_ID + " = " +
-                            DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID +
-                                    " ORDER BY " + DbContract.GameEntry.TABLE_NAME+ "." + DbContract.GameEntry.COLUMN_DATE +" ASC" +  " ;";
-
-
+                            DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID;
+    private static final String SELECTION_ARGS_UPCOMING_GAMES = " WHERE " + DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE  + " >= ?";
+    private static final String SELECTION_ARGS_PAST_GAMES = " WHERE " + DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE  + " <= ?";
+    private static final String ORDER_BY_DATE_ASC =" ORDER BY " + DbContract.GameEntry.TABLE_NAME+ "." + DbContract.GameEntry.COLUMN_DATE +" ASC" +  " ;";
+    private static final String ORDER_BY_DATE_DESC =" ORDER BY " + DbContract.GameEntry.TABLE_NAME+ "." + DbContract.GameEntry.COLUMN_DATE +" DESC" +  " ;";
+    private static final String SELECT_UPCOMING_GAMES =
+                    BASE_SELECT_GAMES_JOINED_ON_TEAMS +
+                    SELECTION_ARGS_UPCOMING_GAMES +
+                    ORDER_BY_DATE_ASC;
+    private static final String SELECT_PAST_GAMES =
+                    BASE_SELECT_GAMES_JOINED_ON_TEAMS +
+                    SELECTION_ARGS_PAST_GAMES +
+                    ORDER_BY_DATE_ASC;
     private static UriMatcher sUriMatcher = buildUriMatcher();
 
     public static UriMatcher buildUriMatcher(){
@@ -76,8 +85,11 @@ public class ResultsContentProvider extends ContentProvider {
                 cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs, null, null, sortOrder);
                 break;
             case GAMES:
-                cursorToReturn = db.rawQuery(SELECT_GAMES_JOINED_ON_TEAMS,selectionArgs);
-                Log.d(TAG, "query: " + SELECT_GAMES_JOINED_ON_TEAMS);
+                if (null == selectionArgs){
+                    throw new SQLException("SelectionArgs is required to this Uri: " + uri);
+                }
+                cursorToReturn = db.rawQuery(SELECT_UPCOMING_GAMES,selectionArgs);
+                Log.d(TAG, "query: " + SELECT_UPCOMING_GAMES);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri.toString());

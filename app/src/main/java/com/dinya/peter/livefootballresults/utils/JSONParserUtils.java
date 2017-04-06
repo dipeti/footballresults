@@ -7,6 +7,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
+import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.entity.Match;
 
 import org.json.JSONArray;
@@ -30,13 +31,13 @@ public class JSONParserUtils {
     private JSONParserUtils() {
     }
 
-    public static ContentValues[] getGames(String jsonString){
-        ContentValues values[];
+    public static List<ContentValues> getGames(String jsonString){
+        List<ContentValues> values;
         try {
             JSONObject baseJsonResponse = new JSONObject(jsonString);
             JSONArray gamesArray = baseJsonResponse.getJSONArray("fixtures");
             int size = gamesArray.length();
-            values = new ContentValues[size];
+            values = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 JSONObject gameJsonObject = gamesArray.getJSONObject(i);
                 int isFinished = gameJsonObject.getString("status").equals("FINISHED") ? 1 : 0;
@@ -54,20 +55,20 @@ public class JSONParserUtils {
                 String id = getId(gameJsonObject.getJSONObject("_links").getJSONObject("self"));
                 String homeId = getId(gameJsonObject.getJSONObject("_links").getJSONObject("homeTeam"));
                 String awayId = getId(gameJsonObject.getJSONObject("_links").getJSONObject("awayTeam"));
-                values[i] = new ContentValues();
-                values[i].put(DbContract.GameEntry._ID,id);
-                values[i].put(DbContract.GameEntry.COLUMN_HOME_ID,homeId);
-                values[i].put(DbContract.GameEntry.COLUMN_AWAY_ID,awayId);
-                values[i].put(DbContract.GameEntry.COLUMN_HOME_SCORE,homeScore);
-                values[i].put(DbContract.GameEntry.COLUMN_AWAY_SCORE,awayScore);
-                values[i].put(DbContract.GameEntry.COLUMN_DATE,new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(date));
-                values[i].put(DbContract.GameEntry.COLUMN_FAVORITE, 0);
-                values[i].put(DbContract.GameEntry.COLUMN_STATUS,isFinished);
-                values[i].put(DbContract.GameEntry.COLUMN_MATCH_DAY,matchDay);
-                values[i].put(DbContract.GameEntry.COLUMN_HOME_ODDS, homeOdds);
-                values[i].put(DbContract.GameEntry.COLUMN_DRAW_ODDS, drawOdds);
-                values[i].put(DbContract.GameEntry.COLUMN_AWAY_ODDS, awayOdds);
-                Log.d(TAG, "getGames:" + values[i].toString());
+                values.add(new ContentValues());
+                values.get(i).put(DbContract.GameEntry._ID,id);
+                values.get(i).put(DbContract.GameEntry.COLUMN_HOME_ID,homeId);
+                values.get(i).put(DbContract.GameEntry.COLUMN_AWAY_ID,awayId);
+                values.get(i).put(DbContract.GameEntry.COLUMN_HOME_SCORE,homeScore);
+                values.get(i).put(DbContract.GameEntry.COLUMN_AWAY_SCORE,awayScore);
+                values.get(i).put(DbContract.GameEntry.COLUMN_DATE,new SimpleDateFormat(DbHelper.SQL_DATE_FORMAT, Locale.ENGLISH).format(date));
+                values.get(i).put(DbContract.GameEntry.COLUMN_FAVORITE, 0);
+                values.get(i).put(DbContract.GameEntry.COLUMN_STATUS,isFinished);
+                values.get(i).put(DbContract.GameEntry.COLUMN_MATCH_DAY,matchDay);
+                values.get(i).put(DbContract.GameEntry.COLUMN_HOME_ODDS, homeOdds);
+                values.get(i).put(DbContract.GameEntry.COLUMN_DRAW_ODDS, drawOdds);
+                values.get(i).put(DbContract.GameEntry.COLUMN_AWAY_ODDS, awayOdds);
+                Log.d(TAG, "getGames:" + values.get(i).toString());
             }
             return values;
         }
@@ -80,13 +81,13 @@ public class JSONParserUtils {
             return null;
     }
 
-    public static ContentValues[] getTeams(String jsonString){
-        ContentValues values[];
+    public static List<ContentValues> getTeams(String jsonString){
+        List<ContentValues> values;
         try {
             JSONObject baseJsonResponse = new JSONObject(jsonString);
             JSONArray teamsArray = baseJsonResponse.getJSONArray("teams");
             int size = teamsArray.length();
-            values = new ContentValues[size];
+            values = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 JSONObject teamJsonObject = teamsArray.getJSONObject(i);
                 String name  = teamJsonObject.getString("name");
@@ -95,13 +96,13 @@ public class JSONParserUtils {
                 String value = teamJsonObject.getString("squadMarketValue");
                 String id = getId(teamJsonObject.getJSONObject("_links").getJSONObject("self"));
 
-                values[i] = new ContentValues();
-                values[i].put(DbContract.TeamEntry.COLUMN_TEAM_NAME,name);
-                values[i].put(DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME,shortName);
-                values[i].put(DbContract.TeamEntry.COLUMN_TEAM_CODE,code);
-                values[i].put(DbContract.TeamEntry._ID,id);
-                values[i].put(DbContract.TeamEntry.COLUMN_TEAM_VALUE,value);
-                Log.d(TAG, "getTeams:" + values[i].toString());
+                values.add(new ContentValues());
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_NAME,name);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME,shortName);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_CODE,code);
+                values.get(i).put(DbContract.TeamEntry._ID,id);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_VALUE,value);
+                Log.d(TAG, "getTeams:" + values.get(i).toString());
             }
             return values;
         }

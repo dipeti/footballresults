@@ -35,7 +35,9 @@ public class NetworkUtils {
      * Parameters
      */
     private static final int UPCOMING_DAYS = 7;
+    private static final int PAST_DAYS = 7;
     private static final String UPCOMING_DAYS_VALUE = "n" + UPCOMING_DAYS ;
+    private static final String PAST_DAYS_VALUE = "p" + PAST_DAYS ;
     private static final String TIMEFRAME_PARAM = "timeFrame";
 
     /**
@@ -46,6 +48,23 @@ public class NetworkUtils {
                 .buildUpon()
                 .appendEncodedPath(FIXTURES_API_PATH)
                 .appendQueryParameter(TIMEFRAME_PARAM, UPCOMING_DAYS_VALUE)
+                .build();
+        try {
+            URL url = new URL(queryURi.toString());
+            Log.v(TAG, "Converted URL: " + url);
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Cannot convert Uri to URL: " + queryURi.toString());
+            return null;
+        }
+    }
+
+    public static URL buildFinishedMatchesURL(){
+        Uri queryURi = Uri.parse(BASE_API_URL)
+                .buildUpon()
+                .appendEncodedPath(FIXTURES_API_PATH)
+                .appendQueryParameter(TIMEFRAME_PARAM, PAST_DAYS_VALUE)
                 .build();
         try {
             URL url = new URL(queryURi.toString());

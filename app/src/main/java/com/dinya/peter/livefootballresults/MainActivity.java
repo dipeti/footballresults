@@ -33,9 +33,14 @@ import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 import com.dinya.peter.livefootballresults.utils.TestUtils;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -102,7 +107,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, DbContract.GameEntry.CONTENT_URI_GAMES,null,null,null,null);
+        SimpleDateFormat sdf = new SimpleDateFormat(DbHelper.SQL_DATE_FORMAT, Locale.UK);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        String currentDate = sdf.format(calendar.getTime());
+        String selection = DbContract.GameEntry.COLUMN_DATE  + " >= ?" + currentDate;
+        Log.d(TAG, "Selection: " + selection);
+        return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_GAMES,null, null, new String[]{currentDate},null);
     }
 
     @Override

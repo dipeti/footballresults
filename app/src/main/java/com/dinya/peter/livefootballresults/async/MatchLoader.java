@@ -45,7 +45,7 @@ public class MatchLoader extends AsyncTaskLoader<Cursor> {
     public Cursor loadInBackground() {
         URL url = NetworkUtils.buildUpcomingMatchesURL();
         String response = NetworkUtils.getResponseFromURL(url);
-        ContentValues[] values = JSONParserUtils.getGames(response);
+        List<ContentValues> values = JSONParserUtils.getGames(response);
         ContentResolver resolver = getContext().getContentResolver();
         if (values != null) {
             for (ContentValues value : values){
