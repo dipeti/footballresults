@@ -36,6 +36,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -107,13 +108,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DbHelper.SQL_DATE_FORMAT, Locale.UK);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        String currentDate = sdf.format(calendar.getTime());
-        String selection = DbContract.GameEntry.COLUMN_DATE  + " >= ?" + currentDate;
-        Log.d(TAG, "Selection: " + selection);
-        return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_GAMES,null, null, new String[]{currentDate},null);
+        String[] selectionArgs = DbContract.getCurrentDateSelectionArgs();
+        Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
+        return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_GAMES,null, null, selectionArgs,null);
     }
 
     @Override

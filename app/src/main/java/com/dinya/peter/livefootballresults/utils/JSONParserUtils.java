@@ -61,7 +61,7 @@ public class JSONParserUtils {
                 values.get(i).put(DbContract.GameEntry.COLUMN_AWAY_ID,awayId);
                 values.get(i).put(DbContract.GameEntry.COLUMN_HOME_SCORE,homeScore);
                 values.get(i).put(DbContract.GameEntry.COLUMN_AWAY_SCORE,awayScore);
-                values.get(i).put(DbContract.GameEntry.COLUMN_DATE,new SimpleDateFormat(DbHelper.SQL_DATE_FORMAT, Locale.ENGLISH).format(date));
+                values.get(i).put(DbContract.GameEntry.COLUMN_DATE,new SimpleDateFormat(DbContract.SQL_DATE_FORMAT, Locale.ENGLISH).format(date));
                 values.get(i).put(DbContract.GameEntry.COLUMN_FAVORITE, 0);
                 values.get(i).put(DbContract.GameEntry.COLUMN_STATUS,isFinished);
                 values.get(i).put(DbContract.GameEntry.COLUMN_MATCH_DAY,matchDay);

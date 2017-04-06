@@ -4,6 +4,10 @@ package com.dinya.peter.livefootballresults.database;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class DbContract {
 
     public static final String AUTHORITY = "com.dinya.peter.livefootballresults";
@@ -13,6 +17,10 @@ public class DbContract {
     public static final String PATH_UPCOMING_GAMES = "games/upcoming";
     public static final String PATH_FAVORITE_GAMES = "games/favorite";
     public static final String PATH_TEAMS = "teams";
+
+
+    public static final String SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
+
 
     public static final class TeamEntry implements BaseColumns{
         public static final Uri CONTENT_URI_TEAMS = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEAMS).build();
@@ -52,4 +60,12 @@ public class DbContract {
     }
 
     private DbContract(){};
+
+    public static String[] getCurrentDateSelectionArgs(){
+        SimpleDateFormat sdf = new SimpleDateFormat(DbContract.SQL_DATE_FORMAT, Locale.UK);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        String currentDate = sdf.format(calendar.getTime());
+       return new String[]{currentDate};
+    }
 }
