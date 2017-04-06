@@ -82,6 +82,11 @@ public class ResultsContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri.toString());
         }
+        /*
+         * Make sure that potential listeners are getting notified. CursorLoader automatically sets the listener.
+         * When data is persisted, resolver.notifyChange(uri,null); will be fired.
+         * This will invoke the listener which will reload the loader.
+         */
         cursorToReturn.setNotificationUri(getContext().getContentResolver(),uri);
         return cursorToReturn;
     }

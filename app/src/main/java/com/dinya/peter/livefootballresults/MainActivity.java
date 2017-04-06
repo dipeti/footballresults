@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,6 +27,7 @@ import com.dinya.peter.livefootballresults.entity.Match;
 import com.dinya.peter.livefootballresults.entity.Team;
 import com.dinya.peter.livefootballresults.listener.EndlessRecyclerViewScrollListener;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
+import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 import com.dinya.peter.livefootballresults.utils.TestUtils;
@@ -88,36 +90,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mLoaderManager.initLoader(UPCOMING_MATCHES_LOADER_ID, null, this);
             DbHelper dbHelper = new DbHelper(this);
             mDb = dbHelper.getWritableDatabase();
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildUpcomingMatchesURL());
-//                ContentValues[] values =  JSONParserUtils.getGames(result);
-//                ContentResolver resolver = getContentResolver();
-//                if (null != values){
-//                    for (ContentValues value : values){
-//                        resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
-//                    }
-//                }
-//            }
-//        }).start();
-            // TODO: inserts all the teams.
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
-//                ContentValues[] values =  JSONParserUtils.getTeams(result);
-//                ContentResolver resolver = getContentResolver();
-//                if (null != values){
-//                    for (ContentValues value : values){
-//                        resolver.insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,value);
-//                    }
-//                }
-//
-//
-//            }
-//        }).start();
+        if(NetworkUtils.isConnected(this))
+            BackgroundSyncUtils.initialize(this);
+        else Toast.makeText(this,"No internet connection", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -127,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new MatchLoader(this);
+        return new CursorLoader(this, DbContract.GameEntry.CONTENT_URI_GAMES,null,null,null,null);
     }
 
     @Override

@@ -43,15 +43,15 @@ public class MatchLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public Cursor loadInBackground() {
-//        URL url = NetworkUtils.buildUpcomingMatchesURL();
-//        String response = NetworkUtils.getResponseFromURL(url);
-//        ContentValues[] values = JSONParserUtils.getGames(response);
+        URL url = NetworkUtils.buildUpcomingMatchesURL();
+        String response = NetworkUtils.getResponseFromURL(url);
+        ContentValues[] values = JSONParserUtils.getGames(response);
         ContentResolver resolver = getContext().getContentResolver();
-//        if (values != null) {
-//            for (ContentValues value : values){
-//               resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
-//            }
-//        }
+        if (values != null) {
+            for (ContentValues value : values){
+               resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
+            }
+        }
         return resolver.query(DbContract.GameEntry.CONTENT_URI_GAMES,null,null,null,null);
     }
 
