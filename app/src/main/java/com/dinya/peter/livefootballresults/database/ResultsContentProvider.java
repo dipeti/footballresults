@@ -26,11 +26,13 @@ public class ResultsContentProvider extends ContentProvider {
     private static final String TAG = ResultsContentProvider.class.getSimpleName();
 
     private static final String GAME_SELECT_ARGS =
+            DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry._ID + " AS " + DbContract.TeamEntry.ALIAS_HOME_ID +  ", " +
+            DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID + " AS " + DbContract.TeamEntry.ALIAS_AWAY_ID +  ", " +
             DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_HOME_TEAM +  ", " +
-                    DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_AWAY_TEAM + ", " +
-                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_HOME_SCORE + ", " +
-                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_SCORE + ", " +
-                    DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE;
+            DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_AWAY_TEAM + ", " +
+            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_HOME_SCORE + ", " +
+            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_SCORE + ", " +
+            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE;
 
     private static final String BASE_SELECT_GAMES_JOINED_ON_TEAMS =
                             "SELECT " + GAME_SELECT_ARGS +

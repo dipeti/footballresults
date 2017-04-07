@@ -2,7 +2,9 @@ package com.dinya.peter.livefootballresults.lists;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,9 @@ import android.widget.TextView;
 
 import com.dinya.peter.livefootballresults.R;
 import com.dinya.peter.livefootballresults.database.DbContract;
+import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.entity.Match;
+import com.dinya.peter.livefootballresults.utils.ResourceUtils;
 
 import org.w3c.dom.Text;
 
@@ -58,7 +62,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         int homeScore = mGames.getInt(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_HOME_SCORE));
         int awayScore = mGames.getInt(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_AWAY_SCORE));
         String dateString = mGames.getString(mGames.getColumnIndex(DbContract.GameEntry.COLUMN_DATE));
-        SimpleDateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+        SimpleDateFormat fromFormat = new SimpleDateFormat(DbContract.SQL_DATE_FORMAT, Locale.ENGLISH);
 
         try {
             Date date = fromFormat.parse(dateString);
@@ -72,10 +76,9 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         holder.listItemHomeScore.setText(0 <= homeScore ? String.valueOf(homeScore) : "");
         holder.listItemAwayTeam.setText(awayTeam);
         holder.listItemAwayScore.setText(0 <= awayScore? String.valueOf(awayScore) : "");
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-//        String date = simpleDateFormat.format(match.getDate());
-
         holder.listItemDate.setText(dateString);
+        holder.listItemHomeLogo.setImageResource(ResourceUtils.getLogoResource(mGames.getInt(mGames.getColumnIndex(DbContract.TeamEntry.ALIAS_HOME_ID))));
+        holder.listItemAwayLogo.setImageResource(ResourceUtils.getLogoResource(mGames.getInt(mGames.getColumnIndex(DbContract.TeamEntry.ALIAS_AWAY_ID))));
     }
 
     @Override
@@ -92,6 +95,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         final TextView listItemAwayTeam;
         final TextView listItemAwayScore;
         final TextView listItemDate;
+        final ImageView listItemHomeLogo;
+        final ImageView listItemAwayLogo;
 
         MatchViewHolder(View itemView) {
             super(itemView);
@@ -100,6 +105,8 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             listItemAwayTeam  = (TextView) itemView.findViewById(R.id.list_item_tv_away_team);
             listItemAwayScore = (TextView) itemView.findViewById(R.id.list_item_tv_away_score);
             listItemDate = (TextView) itemView.findViewById(R.id.list_item_tv_match_date);
+            listItemHomeLogo = (ImageView) itemView.findViewById(R.id.list_item_iv_home_logo);
+            listItemAwayLogo = (ImageView) itemView.findViewById(R.id.list_item_iv_away_logo);
         }
     }
 }

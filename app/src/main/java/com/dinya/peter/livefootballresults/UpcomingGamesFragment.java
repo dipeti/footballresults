@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -76,6 +77,8 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         View view = inflater.inflate(R.layout.fragment_upcoming_games, container, false);
         mMatchesRecyclerView = (RecyclerView) view.findViewById(R.id.rv_upcoming_games);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
+        mMatchesRecyclerView.addItemDecoration(dividerItemDecoration);
         mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
         mMatchesRecyclerView.setAdapter(mMatchAdapter);
         mMatchesRecyclerView.setHasFixedSize(true);

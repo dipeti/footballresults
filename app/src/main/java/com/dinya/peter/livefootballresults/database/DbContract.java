@@ -35,6 +35,8 @@ public class DbContract {
         public static final String ALIAS_TABLE_FIRST = "t1";
         public static final String ALIAS_TABLE_SECOND = "t2";
 
+        public static final String ALIAS_HOME_ID = "homeId";
+        public static final String ALIAS_AWAY_ID = "awayId";
         public static final String ALIAS_HOME_TEAM = "homeTeam";
         public static final String ALIAS_AWAY_TEAM = "awayTeam";
     }
