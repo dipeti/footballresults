@@ -3,9 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarStyle">@style/MyActionBarTitle</item>
     </style>
     <style name="CategoryTab" parent="Widget.Design.TabLayout">
         <item name="tabBackground">@color/colorPrimary</item>
@@ -15,6 +18,15 @@
     </style>
     <style name="CategoryTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">#e1d9d6</item>
+    </style>
+    <style name="MyTheme" parent="Theme.AppCompat">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+    <style name="MyActionBar" parent="Base.Widget.AppCompat.ActionBar">
+        <item name="android:titleTextStyle">@style/MyActionBarTitle</item>
+    </style>
+    <style name="MyActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
 </resources>

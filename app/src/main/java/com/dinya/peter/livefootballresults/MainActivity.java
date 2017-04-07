@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
 
 //    private SQLiteDatabase mDb;
 //    private LoaderManager mLoaderManager;
+    Toolbar mToolbar;
     ViewPager mViewPager;
     FragmentPagerAdapter mFragmentPagerAdapter;
     @Override
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mFragmentPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mFragmentPagerAdapter);
