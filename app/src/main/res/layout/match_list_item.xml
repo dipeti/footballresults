@@ -9,8 +9,8 @@
     android:padding="16dp">
     <ImageView
         android:id="@+id/list_item_iv_home_logo"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/logo_man_utd"
         app:layout_constraintLeft_toLeftOf="parent"
         />
@@ -70,8 +70,8 @@
         />
     <ImageView
         android:id="@+id/list_item_iv_away_logo"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/logo_chelsea_fc"
         app:layout_constraintRight_toRightOf="parent"
         />

@@ -79,7 +79,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
         mMatchesRecyclerView.setAdapter(mMatchAdapter);
         mMatchesRecyclerView.setHasFixedSize(true);
-        return  view;
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

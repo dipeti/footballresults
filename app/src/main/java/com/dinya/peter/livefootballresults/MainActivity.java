@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
 //    private static final int FINISHED_GAMES_LOADER_ID = 2;
     private static final String TAG = MainActivity.class.getSimpleName();
 
-//    private RecyclerView  mMatchesRecyclerView;
-//    MatchAdapter mMatchAdapter;
+
+
 //    private SQLiteDatabase mDb;
 //    private LoaderManager mLoaderManager;
     ViewPager mViewPager;
@@ -48,41 +48,23 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mFragmentPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mFragmentPagerAdapter);
-        TabLayout tableLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tableLayout = (TabLayout) findViewById(R.id.tab_layout);
         tableLayout.setupWithViewPager(mViewPager);
         if(NetworkUtils.isConnected(this))
             BackgroundSyncUtils.initialize(this);
         else Toast.makeText(this,"No internet connection", Toast.LENGTH_LONG).show();
 
 
-//        mMatchesRecyclerView = (RecyclerView) findViewById(R.id.rv_my_matches);
-//        Button mButton = (Button) findViewById(R.id.bt_add_more);
-
-//        mMatchAdapter = new MatchAdapter();
-//        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
-//        mMatchesRecyclerView.setAdapter(mMatchAdapter);
-//        mMatchesRecyclerView.setHasFixedSize(true);
-
-//        mButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mLoaderManager.initLoader(FINISHED_GAMES_LOADER_ID,null,MainActivity.this);
-//            }
-//        });
-
 //            mLoaderManager = getLoaderManager();
 //            mLoaderManager.initLoader(UPCOMING_GAMES_LOADER_ID, null, this);
 //            DbHelper dbHelper = new DbHelper(this);
 //            mDb = dbHelper.getWritableDatabase();
-//        if(NetworkUtils.isConnected(this))
-//            BackgroundSyncUtils.initialize(this);
-//        else Toast.makeText(this,"No internet connection", Toast.LENGTH_LONG).show();
+
     }
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
+    private static class MyPagerAdapter extends FragmentPagerAdapter {
         private static final int COUNT = 2;
 
-        public MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
