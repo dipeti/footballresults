@@ -119,7 +119,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         String[] selectionArgs;
         switch (id){
             case UPCOMING_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(1); // games in the upcoming 'dayDiff' days
+                selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
             case FINISHED_GAMES_LOADER_ID:

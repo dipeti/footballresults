@@ -118,7 +118,7 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
                 selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, null,null);
             case FINISHED_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(-3); // games in the past 'dayDiff' days
+                selectionArgs = DbContract.getDateSelectionArgs(-7); // games in the past 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
             default:
