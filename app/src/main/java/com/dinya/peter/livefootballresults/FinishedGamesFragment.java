@@ -6,10 +6,8 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,13 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
-import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
 import java.util.Arrays;
 
@@ -120,11 +115,10 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
         String[] selectionArgs;
         switch (id){
             case UPCOMING_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getCurrentDateSelectionArgs();
-                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-                return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
+                selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
+                return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, null,null);
             case FINISHED_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getCurrentDateSelectionArgs();
+                selectionArgs = DbContract.getDateSelectionArgs(-3); // games in the past 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
             default:

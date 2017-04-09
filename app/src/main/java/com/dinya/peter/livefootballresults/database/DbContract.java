@@ -3,10 +3,12 @@ package com.dinya.peter.livefootballresults.database;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class DbContract {
 
@@ -66,10 +68,12 @@ public class DbContract {
 
     private DbContract(){};
 
-    public static String[] getCurrentDateSelectionArgs(){
+    public static String[] getDateSelectionArgs(int dayDiff){
         SimpleDateFormat sdf = new SimpleDateFormat(DbContract.SQL_DATE_FORMAT, Locale.UK);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        Log.e("asd", "getDateSelectionArgs: " +TimeUnit.DAYS.toMillis(dayDiff));
+        long dateInLong = System.currentTimeMillis()+TimeUnit.DAYS.toMillis(dayDiff);
+        calendar.setTimeInMillis(dateInLong);
         String currentDate = sdf.format(calendar.getTime());
        return new String[]{currentDate};
     }
