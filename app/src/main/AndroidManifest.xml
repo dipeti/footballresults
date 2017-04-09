@@ -30,7 +30,7 @@
         <activity android:name=".SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:theme="@style/SettingsTheme"
             />
     </application>
 

@@ -10,6 +10,11 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/MyActionBarTitle</item>
     </style>
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
     <style name="CategoryTab" parent="Widget.Design.TabLayout">
         <item name="tabBackground">@color/colorPrimary</item>
         <item name="tabIndicatorColor">@color/colorPrimaryDark</item>
