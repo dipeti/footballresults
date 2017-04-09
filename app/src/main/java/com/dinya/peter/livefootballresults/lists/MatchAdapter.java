@@ -1,7 +1,10 @@
 package com.dinya.peter.livefootballresults.lists;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -71,7 +74,16 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+        if (homeScore > awayScore){
+                holder.listItemHomeTeam.setTypeface(null, Typeface.BOLD);
+                holder.listItemAwayTeam.setTypeface(null, Typeface.NORMAL);
+        } else if (homeScore < awayScore){
+            holder.listItemAwayTeam.setTypeface(null, Typeface.BOLD);
+            holder.listItemHomeTeam.setTypeface(null, Typeface.NORMAL);
+        }else {
+            holder.listItemHomeTeam.setTypeface(null, Typeface.NORMAL);
+            holder.listItemAwayTeam.setTypeface(null, Typeface.NORMAL);
+        }
         holder.listItemHomeTeam.setText(homeTeam);
         holder.listItemHomeScore.setText(0 <= homeScore ? String.valueOf(homeScore) : "");
         holder.listItemAwayTeam.setText(awayTeam);
