@@ -65,6 +65,7 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
         mLoaderManager.initLoader(FINISHED_GAMES_LOADER_ID, null, this);
         DbHelper dbHelper = new DbHelper(getContext());
         mDb = dbHelper.getWritableDatabase();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
 
     }
 
