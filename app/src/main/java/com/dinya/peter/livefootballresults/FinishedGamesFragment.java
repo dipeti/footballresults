@@ -4,10 +4,12 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +26,7 @@ import java.util.Arrays;
 
 
 
-public class FinishedGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FinishedGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
     private static final int UPCOMING_GAMES_LOADER_ID = 1;
@@ -118,7 +120,8 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
                 selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, null,null);
             case FINISHED_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(-7); // games in the past 'dayDiff' days
+                int daysPast = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("days_past", "5"));
+                selectionArgs = DbContract.getDateSelectionArgs(-daysPast); // games in the past 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
             default:
@@ -135,6 +138,11 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMatchAdapter.swap(null);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mLoaderManager.restartLoader(FINISHED_GAMES_LOADER_ID,null,this);
     }
 
     /**

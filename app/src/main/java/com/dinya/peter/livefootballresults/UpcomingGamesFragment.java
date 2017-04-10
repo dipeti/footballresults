@@ -4,11 +4,13 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +30,7 @@ import java.util.Arrays;
 
 
 
-public class UpcomingGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class UpcomingGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
     private static final int UPCOMING_GAMES_LOADER_ID = 1;
@@ -67,6 +69,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         mLoaderManager.initLoader(UPCOMING_GAMES_LOADER_ID, null, this);
         DbHelper dbHelper = new DbHelper(getContext());
         mDb = dbHelper.getWritableDatabase();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
 
     }
 
@@ -119,11 +122,13 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         String[] selectionArgs;
         switch (id){
             case UPCOMING_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
+                int daysAhead = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("days_ahead", "5"));
+                selectionArgs = DbContract.getDateSelectionArgs(daysAhead); // games in the upcoming 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
             case FINISHED_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(0);
+                int daysPast = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("days_past", 5);
+                selectionArgs = DbContract.getDateSelectionArgs(daysPast);
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
                 return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
             default:
@@ -140,6 +145,11 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMatchAdapter.swap(null);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mLoaderManager.restartLoader(UPCOMING_GAMES_LOADER_ID,null,this);
     }
 
     /**

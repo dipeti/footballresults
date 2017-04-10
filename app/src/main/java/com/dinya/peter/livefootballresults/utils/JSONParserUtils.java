@@ -49,9 +49,12 @@ public class JSONParserUtils {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
                 Date date = simpleDateFormat.parse(gameJsonObject.getString("date"));
                 String matchDay = gameJsonObject.getString("matchday");
-                String homeOdds = gameJsonObject.getJSONObject("odds").getString("homeWin");
-                String drawOdds = gameJsonObject.getJSONObject("odds").getString("draw");
-                String awayOdds = gameJsonObject.getJSONObject("odds").getString("awayWin");
+                String homeOdds = "", drawOdds = "", awayOdds = "";
+                if (!gameJsonObject.isNull("odds")) {
+                    homeOdds = gameJsonObject.getJSONObject("odds").getString("homeWin");
+                    drawOdds = gameJsonObject.getJSONObject("odds").getString("draw");
+                    awayOdds = gameJsonObject.getJSONObject("odds").getString("awayWin");
+                }
                 String id = getId(gameJsonObject.getJSONObject("_links").getJSONObject("self"));
                 String homeId = getId(gameJsonObject.getJSONObject("_links").getJSONObject("homeTeam"));
                 String awayId = getId(gameJsonObject.getJSONObject("_links").getJSONObject("awayTeam"));

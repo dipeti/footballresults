@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="Days ahead"
+        android:key="days_ahead"
+        android:summary="Number of upcoming days: %s"
+        android:entries="@array/days"
+        android:entryValues="@array/days_values"
+        android:defaultValue="5"
+    />
+    <ListPreference
+        android:title="Days past"
+        android:summary="Number of past days: %s"
+        android:key="days_past"
+        android:entries="@array/days"
+        android:entryValues="@array/days_values"
+        android:defaultValue="5"
+        />
+</PreferenceScreen>
