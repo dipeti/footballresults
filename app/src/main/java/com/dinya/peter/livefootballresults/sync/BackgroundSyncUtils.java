@@ -2,9 +2,11 @@ package com.dinya.peter.livefootballresults.sync;
 
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -23,51 +25,34 @@ public class BackgroundSyncUtils {
         Log.d(TAG, "Initialized: " + sInitialized);
         if  (sInitialized) return;
         sInitialized = true;
-        Thread checkForTeams = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.d(TAG, "checkForTeams running....");
-                    Cursor cursorTeams = context.getContentResolver().query(DbContract.TeamEntry.CONTENT_URI_TEAMS,null,null,null,null);
-                    if (null == cursorTeams || 0 == cursorTeams.getCount()){
-                        startSyncTeams(context);
-                    }
-                    cursorTeams.close();
-                } catch (NullPointerException ex){
-                    ex.printStackTrace();
-                }
-                Log.d(TAG, "checkForTeams finished....");
-            }
-        });
-        Thread syncGames = new Thread(new Runnable() {
+        Thread syncData = new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
                     Log.d(TAG, "syncGames running....");
                     startSyncGames(context);
+                    startSyncTable(context);
                 } catch (NullPointerException ex){
                     ex.printStackTrace();
                 }
                 Log.d(TAG, "syncGames finished....");
             }
         });
-        checkForTeams.start();
-        /*
-         * Stops the main thread. The application waits until the Teams are persisted.
-         * This should only happen when the app is started for the very first time.
-         */
-        try {
-            checkForTeams.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        syncGames.start();
+
+        syncData.start();
 
 
 
     }
 
     synchronized private static void startSyncGames(Context context) {
+        Cursor cursorTeams = context.getContentResolver().query(DbContract.TeamEntry.CONTENT_URI_TEAMS,null,null,null,null);
+        if (null == cursorTeams || 0 == cursorTeams.getCount()){
+            startSyncTeams(context);
+        }
+        if (cursorTeams != null) {
+            cursorTeams.close();
+        }
         String upcomingResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildUpcomingMatchesURL());
         String pastResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildFinishedMatchesURL());
         List<ContentValues> values =  JSONParserUtils.getGames(upcomingResult);
@@ -83,14 +68,27 @@ public class BackgroundSyncUtils {
     }
 
     private static void startSyncTeams(Context context) {
-        String result = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
-        List<ContentValues> values =  JSONParserUtils.getTeams(result);
+        String teamResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildTeamsURL());
+        List<ContentValues> teamValues =  JSONParserUtils.getTeams(teamResult);
         ContentResolver resolver = context.getContentResolver();
-                if (null != values && 0 != values.size()){
-                    for (ContentValues value : values){
+                if (null != teamValues && 0 != teamValues.size()){
+                    for (ContentValues value : teamValues){
                         resolver.insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,value);
                     }
                 }
+    }
+
+    private static void startSyncTable(Context context){
+        String tableResult = NetworkUtils.getResponseFromURL(NetworkUtils.buildTableURL());
+        List<ContentValues> tableValues = JSONParserUtils.getTable(tableResult);
+        ContentResolver resolver = context.getContentResolver();
+        if (null != tableValues && 0 != tableValues.size()){
+            for (ContentValues value : tableValues){
+                String id = value.getAsString(DbContract.TeamEntry._ID);
+                Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,Long.parseLong(id));
+                resolver.update(uri,value, DbContract.TeamEntry._ID + " = ?", new String[]{id});
+            }
+        }
     }
 
 }

@@ -20,6 +20,7 @@ public class DbContract {
     public static final String PATH_FINISHED_GAMES = "finished";
     public static final String PATH_FAVORITE_GAMES = "favorite";
     public static final String PATH_TEAMS = "teams";
+    public static final String PATH_TABLE = "table";
 
 
     public static final String SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
@@ -28,12 +29,32 @@ public class DbContract {
     public static final class TeamEntry implements BaseColumns{
         public static final Uri CONTENT_URI_TEAMS = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEAMS).build();
 
+        /**
+         * TEAM INFO
+         */
         public static final String TABLE_NAME = "teams";
         public static final String COLUMN_TEAM_NAME = "teamName";
         public static final String COLUMN_TEAM_SHORT_NAME = "teamShortName";
         public static final String COLUMN_TEAM_CODE = "teamCode";
         public static final String COLUMN_TEAM_VALUE = "teamValue";
 
+        /**
+         * TABLE INFO
+         */
+        public static final String COLUMN_TEAM_POSITION = "position";
+        public static final String COLUMN_TEAM_PLAYED_GAMES = "playedGames";
+        public static final String COLUMN_TEAM_POINTS = "points";
+        public static final String COLUMN_TEAM_GOALS = "goals";
+        public static final String COLUMN_TEAM_GOALS_AGAINST = "goalsAgainst";
+        public static final String COLUMN_TEAM_GOAL_DIFFERENCE = "goalDiff";
+        public static final String COLUMN_TEAM_WINS = "wins";
+        public static final String COLUMN_TEAM_DRAWS = "draws";
+        public static final String COLUMN_TEAM_LOSSES = "loses";
+
+        /**
+         * ALIASES
+         * used in SQL statements
+         */
         public static final String ALIAS_TABLE_FIRST = "t1";
         public static final String ALIAS_TABLE_SECOND = "t2";
 

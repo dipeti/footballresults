@@ -116,6 +116,50 @@ public class JSONParserUtils {
         return null;
     }
 
+    public static List<ContentValues> getTable(String jsonString){
+        List<ContentValues> values;
+        try {
+            JSONObject baseJsonResponse = new JSONObject(jsonString);
+            JSONArray tableArray = baseJsonResponse.getJSONArray("standing");
+            int size = tableArray.length();
+            values = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                JSONObject tableJsonObject = tableArray.getJSONObject(i);
+                String id = getId(tableJsonObject.getJSONObject("_links").getJSONObject("team"));
+                String position = tableJsonObject.getString("position");
+                String playedGames = tableJsonObject.getString("playedGames");
+                String points = tableJsonObject.getString("points");
+                String goals = tableJsonObject.getString("goals");
+                String goalsAgainst = tableJsonObject.getString("goalsAgainst");
+                String goalDifference = tableJsonObject.getString("goalDifference");
+                String losses = tableJsonObject.getString("losses");
+                String draws = tableJsonObject.getString("draws");
+                String wins = tableJsonObject.getString("wins");
+
+                values.add(new ContentValues());
+                values.get(i).put(DbContract.TeamEntry._ID,id);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_POSITION,position);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_PLAYED_GAMES,playedGames);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_POINTS,points);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_GOALS,goals);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_GOALS_AGAINST,goalsAgainst);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_GOAL_DIFFERENCE,goalDifference);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_WINS,wins);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_DRAWS,draws);
+                values.get(i).put(DbContract.TeamEntry.COLUMN_TEAM_LOSSES,losses);
+                Log.d(TAG, "getTable: " + values.get(i).toString());
+            }
+            return values;
+        } catch (JSONException ex){
+            Log.e("JSONParserUtil", "Problem parsing the matches JSON results: " + jsonString, ex);
+
+        }
+        return null;
+    }
+
+    /**
+     * The URL the data is retrieved from: "http://api.football-data.org/v1/teams/61"
+     */
     private static String getId(JSONObject gameJsonObject) throws JSONException {
         String href = gameJsonObject.getString("href");
         Uri uri = Uri.parse(href);

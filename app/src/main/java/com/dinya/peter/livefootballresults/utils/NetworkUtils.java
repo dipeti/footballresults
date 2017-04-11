@@ -30,7 +30,7 @@ public class NetworkUtils {
     private static final String BASE_API_URL = "http://api.football-data.org";
     private static final String FIXTURES_API_PATH = "v1/competitions/426/fixtures";
     private static final String TEAMS_API_PATH = "v1/competitions/426/teams";
-
+    private static final String TABLE_API_PATH = "v1/competitions/426/leagueTable";
     /**
      * Parameters
      */
@@ -81,6 +81,22 @@ public class NetworkUtils {
         Uri queryURi = Uri.parse(BASE_API_URL)
                 .buildUpon()
                 .appendEncodedPath(TEAMS_API_PATH)
+                .build();
+        try {
+            URL url = new URL(queryURi.toString());
+            Log.v(TAG, "Converted URL: " + url);
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Cannot convert Uri to URL: " + queryURi.toString());
+            return null;
+        }
+    }
+
+    public static URL buildTableURL(){
+        Uri queryURi = Uri.parse(BASE_API_URL)
+                .buildUpon()
+                .appendEncodedPath(TABLE_API_PATH)
                 .build();
         try {
             URL url = new URL(queryURi.toString());

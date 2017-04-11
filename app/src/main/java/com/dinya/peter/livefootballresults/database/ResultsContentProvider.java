@@ -27,6 +27,8 @@ public class ResultsContentProvider extends ContentProvider {
     public static final int TEAMS = 200;
     public static final int TEAM_WITH_ID = 201;
 
+    public static final int TABLE = 300;
+
     /**
      * debug TAG
      */
@@ -88,6 +90,7 @@ public class ResultsContentProvider extends ContentProvider {
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_UPCOMING_GAMES, GAMES_UPCOMING);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FINISHED_GAMES, GAMES_FINISHED);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FAVORITE_GAMES, GAMES_FAVORITE);
+        uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_TABLE, TABLE);
 
         return uriMatcher;
     }
@@ -124,6 +127,10 @@ public class ResultsContentProvider extends ContentProvider {
                 cursorToReturn = db.rawQuery(SELECT_FINISHED_GAMES,selectionArgs);
                 Log.d(TAG, "query: " + SELECT_FINISHED_GAMES);
                 break;
+            case TABLE:
+                cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs,null,null, DbContract.TeamEntry.COLUMN_TEAM_POSITION + " ASC ");
+                Log.d(TAG, "query: " + SELECT_UPCOMING_GAMES);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri.toString());
         }
@@ -139,7 +146,27 @@ public class ResultsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case GAMES:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + DbContract.AUTHORITY + "/" + DbContract.PATH_GAMES;
+            case GAMES_FINISHED:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + DbContract.AUTHORITY + "/" + DbContract.PATH_FINISHED_GAMES;
+            case GAMES_UPCOMING:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + DbContract.AUTHORITY + "/" + DbContract.PATH_UPCOMING_GAMES;
+            case TEAMS:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + DbContract.AUTHORITY + "/" + DbContract.PATH_TEAMS;
+            case TEAM_WITH_ID:
+                // single item type
+                return "vnd.android.cursor.item" + "/" + DbContract.AUTHORITY + "/" + DbContract.PATH_TEAMS;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     @Nullable
@@ -183,6 +210,19 @@ public class ResultsContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int rowUpdated;
+        int match = sUriMatcher.match(uri);
+        switch (match){
+            case TEAM_WITH_ID:
+                rowUpdated = db.update(DbContract.TeamEntry.TABLE_NAME,values, DbContract.TeamEntry._ID + " = ?",selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowUpdated != 0){
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
+        return rowUpdated;
     }
 }

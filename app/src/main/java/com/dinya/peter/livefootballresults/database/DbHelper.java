@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "results.db";
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 22;
 
     public DbHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -22,7 +22,16 @@ public class DbHelper extends SQLiteOpenHelper {
                 DbContract.TeamEntry.COLUMN_TEAM_NAME + " TEXT NOT NULL, " +
                 DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " TEXT NOT NULL, " +
                 DbContract.TeamEntry.COLUMN_TEAM_CODE + " TEXT NOT NULL, " +
-                DbContract.TeamEntry.COLUMN_TEAM_VALUE + " INTEGER DEFAULT 0 " +
+                DbContract.TeamEntry.COLUMN_TEAM_VALUE + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_POSITION + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_PLAYED_GAMES + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_POINTS + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_GOALS + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_GOALS_AGAINST + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_GOAL_DIFFERENCE + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_WINS + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_DRAWS + " INTEGER DEFAULT 0, " +
+                DbContract.TeamEntry.COLUMN_TEAM_LOSSES + " INTEGER DEFAULT 0 " +
                 "); ";
 
         final String SQL_CREATE_GAMES_TABLE = "CREATE TABLE " + DbContract.GameEntry.TABLE_NAME + "(" +
