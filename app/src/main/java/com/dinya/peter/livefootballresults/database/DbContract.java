@@ -28,6 +28,7 @@ public class DbContract {
 
     public static final class TeamEntry implements BaseColumns{
         public static final Uri CONTENT_URI_TEAMS = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEAMS).build();
+        public static final Uri CONTENT_URI_TABLE = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TABLE).build();
 
         /**
          * TEAM INFO

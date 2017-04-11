@@ -32,7 +32,7 @@ import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity /*implements LoaderManager.LoaderCallbacks<Cursor>*/ {
+public class MainActivity extends AppCompatActivity implements TableFragment.OnListFragmentInteractionListener {
 
 //    private static final int UPCOMING_GAMES_LOADER_ID = 1;
 //    private static final int FINISHED_GAMES_LOADER_ID = 2;
@@ -86,8 +86,13 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onListFragmentInteraction(int teamId) {
+
+    }
+
     private static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static final int COUNT = 2;
+        private static final int COUNT = 3;
 
         MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -100,6 +105,8 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
                     return FinishedGamesFragment.newInstance();
                 case 1:
                     return UpcomingGamesFragment.newInstance();
+                case 2:
+                    return TableFragment.newInstance();
                 default:
                     return null;
             }
@@ -115,6 +122,7 @@ public class MainActivity extends AppCompatActivity /*implements LoaderManager.L
             switch (position){
                 case 0: return "Finished games";
                 case 1: return "Upcoming games";
+                case 2: return "Table";
                 default:
                     return "error";
             }
