@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return "Finished games";
-                case 1: return "Upcoming games";
+                case 0: return "Finished";
+                case 1: return "Upcoming";
                 case 2: return "Table";
                 default:
                     return "error";
