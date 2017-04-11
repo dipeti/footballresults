@@ -3,47 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/rect"
+    >
     <TextView
-        android:id="@+id/table_item_position"
+        android:id="@+id/table_item_position_label"
         android:layout_width="0dp"
         android:layout_weight="0.15"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:textAlignment="center"
-        tools:text="1"/>
-
-    <ImageView
-        android:id="@+id/table_item_logo"
-        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="#"/>
+    <Space
         android:layout_width="20dp"
         android:layout_height="20dp"
-        tools:background="@drawable/logo_man_utd"
+        android:layout_margin="10dp"
         />
     <TextView
-        android:id="@+id/table_item_team"
+        android:id="@+id/table_item_team_label"
         android:layout_width="0dp"
         android:layout_weight="0.55"
+        android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_height="wrap_content"
-        tools:text="Manchester United"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="Team"
         />
     <TextView
-
-        android:id="@+id/table_item_played_games"
+        android:id="@+id/table_item_played_games_label"
         android:layout_width="0dp"
         android:layout_weight="0.15"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        tools:text="31"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="MP"
         />
     <TextView
-
-        android:id="@+id/table_item_points"
+        android:id="@+id/table_item_points_label"
         android:layout_width="0dp"
         android:layout_weight="0.15"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        tools:text="55"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="Pts"
         />
 </LinearLayout>

@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="textColorPrimary">#FFFFFF</color>
+    <color name="CL_group">#00027e</color>
+    <color name="CL_qualification">#00b2ff</color>
+    <color name="EL_group">#79030b</color>
+    <color name="EL_qualification">#8f007f</color>
+    <color name="relegation">#ef0408</color>
+    <color name="white">#FFFFFF</color>
 </resources>
