@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.lists.TableAdapter;
@@ -35,7 +37,25 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TableAdapter mAdapter;
 
+    private LinearLayout mHeader;
+
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView mRecyclerView;
+    private TextView mEmptyView;
+    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            if(0 == mAdapter.getItemCount()){
+                mRecyclerView.setVisibility(View.GONE);
+                mHeader.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
+            }else {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mHeader.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
+    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,8 +76,14 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onCreate(savedInstanceState);
 
         mAdapter = new TableAdapter(getContext());
+        mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mLoaderManager = getActivity().getLoaderManager();
         mLoaderManager.initLoader(MainActivity.TABLE_LOADER_ID, null, this);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
     }
 
     @Override
@@ -66,15 +92,17 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
 
         Context context = view.getContext();
 
+        mHeader = (LinearLayout) view.findViewById(R.id.ll_table_header);
+        mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         /*
          * RecyclerView initialization
          */
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv_table);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_table);
         if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
 
         /*
          * SwipeToRefresh initialization
@@ -87,6 +115,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
+        mAdapterDataObserver.onChanged();
         return view;
     }
 

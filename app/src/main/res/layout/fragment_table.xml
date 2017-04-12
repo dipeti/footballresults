@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <include layout="@layout/table_list_header"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+    <include
+        android:id="@+id/ll_table_header"
+        layout="@layout/table_list_header"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_refresh_table"
         android:layout_width="match_parent"
@@ -18,8 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.dinya.peter.livefootballresults.TableFragment"
+            tools:context="com.dinya.peter.livefootballresults.TableFragment"
         tools:listitem="@layout/table_list_item" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+    </LinearLayout>
+    <include layout="@layout/empty_view"/>
+</FrameLayout>

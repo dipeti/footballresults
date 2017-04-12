@@ -6,7 +6,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,9 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
@@ -32,11 +31,25 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
 
+    private RecyclerView mRecyclerView;
+    private TextView mEmptyView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     MatchAdapter mMatchAdapter;
     private LoaderManager mLoaderManager;
 
 //    private OnFragmentInteractionListener mListener;
+    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+    @Override
+    public void onChanged() {
+        if(0 == mMatchAdapter.getItemCount()){
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.INVISIBLE);
+        }
+    }
+};
 
     public FinishedGamesFragment() {
         // Required empty public constructor
@@ -59,33 +72,38 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMatchAdapter = new MatchAdapter();
+
         mLoaderManager = getActivity().getLoaderManager();
-        mLoaderManager.initLoader(MainActivity.FINISHED_GAMES_LOADER_ID, null, this);
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
+        mMatchAdapter = new MatchAdapter();
+        mMatchAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        mMatchAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_finished_games, container, false);
+
+        mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         /*
          * RecyclerView initialization
          */
-        RecyclerView matchesRecyclerView = (RecyclerView) view.findViewById(R.id.rv_finished_games);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_finished_games);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
-        matchesRecyclerView.addItemDecoration(dividerItemDecoration);
-        matchesRecyclerView.setLayoutManager(linearLayoutManager);
-        matchesRecyclerView.setAdapter(mMatchAdapter);
-        matchesRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mMatchAdapter);
+        mRecyclerView.setHasFixedSize(true);
         /*
          * SwipeToRefresh initialization
          */
@@ -97,7 +115,19 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
+        /**
+         * Important remark:
+         * Loader is started in CreateView so that it has got access to {@link mEmptyView} in  onCreateLoader.
+         * Otherwise {@link mEmptyView} may flash inconveniently before the loader has finished.
+         */
+        mLoaderManager.initLoader(MainActivity.FINISHED_GAMES_LOADER_ID, null, this);
+        mAdapterDataObserver.onChanged();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void fetchData() {
@@ -136,6 +166,7 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mEmptyView.setVisibility(View.INVISIBLE);
         String[] selectionArgs;
         switch (id){
             case MainActivity.FINISHED_GAMES_LOADER_ID:

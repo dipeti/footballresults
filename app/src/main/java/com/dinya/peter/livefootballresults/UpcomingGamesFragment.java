@@ -18,9 +18,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
@@ -38,6 +38,20 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
 
 //    private OnFragmentInteractionListener mListener;
 
+    private RecyclerView mRecyclerView;
+    private TextView mEmptyView;
+    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            if (0 == mMatchAdapter.getItemCount()) {
+                mRecyclerView.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
+    };
     public UpcomingGamesFragment() {
         // Required empty public constructor
     }
@@ -60,13 +74,15 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
 
         mMatchAdapter = new MatchAdapter();
+        mMatchAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mLoaderManager = getActivity().getLoaderManager();
-        mLoaderManager.initLoader(MainActivity.UPCOMING_GAMES_LOADER_ID, null, this);
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
+
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mMatchAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -75,17 +91,17 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming_games, container, false);
-
+        mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         /*
          * RecyclerView initialization
          */
-        RecyclerView matchesRecyclerView = (RecyclerView) view.findViewById(R.id.rv_upcoming_games);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_upcoming_games);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
-        matchesRecyclerView.addItemDecoration(dividerItemDecoration);
-        matchesRecyclerView.setLayoutManager(linearLayoutManager);
-        matchesRecyclerView.setAdapter(mMatchAdapter);
-        matchesRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mMatchAdapter);
+        mRecyclerView.setHasFixedSize(true);
 
         /*
          * SwipeToRefresh initialization
@@ -97,12 +113,13 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
                 fetchData();
             }
         });
-
+        mLoaderManager.initLoader(MainActivity.UPCOMING_GAMES_LOADER_ID, null, this);
+        mAdapterDataObserver.onChanged();
         return view;
     }
 
     private void fetchData() {
-        if(!BackgroundSyncUtils.startImmediateSync(getContext()));
+        if(!BackgroundSyncUtils.startImmediateSync(getContext()))
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -137,6 +154,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mEmptyView.setVisibility(View.INVISIBLE);
         String[] selectionArgs;
         switch (id){
             case MainActivity.UPCOMING_GAMES_LOADER_ID:
