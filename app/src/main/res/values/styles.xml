@@ -6,7 +6,7 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/MyActionBarTitle</item>
     </style>
@@ -23,7 +23,7 @@
         <item name="tabTextAppearance">@style/CategoryTabTextAppearance</item>
     </style>
     <style name="CategoryTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textColor">#e1d9d6</item>
+        <item name="android:textColor">#e7e1df</item>
     </style>
     <style name="MyTheme" parent="Theme.AppCompat">
         <item name="android:actionBarStyle">@style/MyActionBar</item>

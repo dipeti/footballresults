@@ -7,6 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:paddingTop="10dp"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
     >
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
