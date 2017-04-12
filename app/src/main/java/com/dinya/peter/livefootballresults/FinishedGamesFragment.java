@@ -31,13 +31,9 @@ import java.util.Arrays;
 public class FinishedGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
-    private static final int UPCOMING_GAMES_LOADER_ID = 1;
-    private static final int FINISHED_GAMES_LOADER_ID = 2;
 
-    private RecyclerView mMatchesRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     MatchAdapter mMatchAdapter;
-    private SQLiteDatabase mDb;
     private LoaderManager mLoaderManager;
 
 //    private OnFragmentInteractionListener mListener;
@@ -65,11 +61,8 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
 
         mMatchAdapter = new MatchAdapter();
         mLoaderManager = getActivity().getLoaderManager();
-        mLoaderManager.initLoader(FINISHED_GAMES_LOADER_ID, null, this);
-        DbHelper dbHelper = new DbHelper(getContext());
-        mDb = dbHelper.getWritableDatabase();
+        mLoaderManager.initLoader(MainActivity.FINISHED_GAMES_LOADER_ID, null, this);
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-
     }
 
     @Override
@@ -83,14 +76,19 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_finished_games, container, false);
-        mMatchesRecyclerView = (RecyclerView) view.findViewById(R.id.rv_finished_games);
+        /*
+         * RecyclerView initialization
+         */
+        RecyclerView matchesRecyclerView = (RecyclerView) view.findViewById(R.id.rv_finished_games);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
-        mMatchesRecyclerView.addItemDecoration(dividerItemDecoration);
-        mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
-        mMatchesRecyclerView.setAdapter(mMatchAdapter);
-        mMatchesRecyclerView.setHasFixedSize(true);
-
+        matchesRecyclerView.addItemDecoration(dividerItemDecoration);
+        matchesRecyclerView.setLayoutManager(linearLayoutManager);
+        matchesRecyclerView.setAdapter(mMatchAdapter);
+        matchesRecyclerView.setHasFixedSize(true);
+        /*
+         * SwipeToRefresh initialization
+         */
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh_finished_games);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -99,13 +97,12 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-
         return view;
     }
 
     private void fetchData() {
-        BackgroundSyncUtils.startImmediateSync(getContext());
-        mSwipeRefreshLayout.setRefreshing(false);
+        if(!BackgroundSyncUtils.startImmediateSync(getContext()))
+            mSwipeRefreshLayout.setRefreshing(false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -141,10 +138,7 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] selectionArgs;
         switch (id){
-            case UPCOMING_GAMES_LOADER_ID:
-                selectionArgs = DbContract.getDateSelectionArgs(7); // games in the upcoming 'dayDiff' days
-                return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, null,null);
-            case FINISHED_GAMES_LOADER_ID:
+            case MainActivity.FINISHED_GAMES_LOADER_ID:
                 int daysPast = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("days_past", "5"));
                 selectionArgs = DbContract.getDateSelectionArgs(-daysPast); // games in the past 'dayDiff' days
                 Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
@@ -157,17 +151,22 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mMatchAdapter.swap(data);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMatchAdapter.swap(null);
     }
 
+    /*
+     * ------------------
+     * OnSharedPreferenceChangeListener
+     * ------------------
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mLoaderManager.restartLoader(FINISHED_GAMES_LOADER_ID,null,this);
+        mLoaderManager.restartLoader(MainActivity.FINISHED_GAMES_LOADER_ID,null,this);
     }
 
     /**

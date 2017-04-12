@@ -22,15 +22,17 @@ public class BackgroundSyncUtils {
 
     }
 
-    public static void startImmediateSync(@NonNull final Context context) {
+    public static boolean startImmediateSync(@NonNull final Context context) {
         if (NetworkUtils.isConnected(context)) {
             Intent intentToSync = new Intent(context, BackgroundSyncIntentService.class);
             context.startService(intentToSync);
             CoordinatorLayout container = (CoordinatorLayout) ((Activity)context).findViewById(R.id.cl_container);
             Snackbar.make(container,"Data updated!", Snackbar.LENGTH_SHORT).show();
+            return true;
         }else {
             CoordinatorLayout container = (CoordinatorLayout) ((Activity)context).findViewById(R.id.cl_container);
             Snackbar.make(container,"No internet connection!", Snackbar.LENGTH_LONG).show();
+            return false;
         }
     }
 }

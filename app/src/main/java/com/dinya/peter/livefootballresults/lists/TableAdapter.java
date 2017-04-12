@@ -1,28 +1,19 @@
-package com.dinya.peter.livefootballresults;
+package com.dinya.peter.livefootballresults.lists;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dinya.peter.livefootballresults.TableFragment.OnListFragmentInteractionListener;
+import com.dinya.peter.livefootballresults.R;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.utils.ResourceUtils;
 
-import java.util.List;
-
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
 
     private Cursor mCursor;
@@ -45,7 +36,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        final int id = mCursor.getInt(mCursor.getColumnIndex(DbContract.TeamEntry._ID));
+        int id = mCursor.getInt(mCursor.getColumnIndex(DbContract.TeamEntry._ID));
         String teamPosition = mCursor.getString(mCursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_POSITION));
         String teamName = mCursor.getString(mCursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_NAME));
         String teamPoints = mCursor.getString(mCursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_POINTS));
@@ -57,32 +48,31 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         holder.mTeam.setText(teamName);
         holder.mLogo.setImageResource(ResourceUtils.getLogoResource(id));
 
-
-            int pos = Integer.parseInt((String) holder.mPosition.getText());
-            switch (pos){
-                case 1:
-                case 2:
-                case 3: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.CL_group));
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white));
-                    break;
-                case 4:  holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext, R.color.CL_qualification));
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                    break;
-                case 5:
-                case 6: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext, R.color.EL_group));
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                    break;
-                case 7: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.EL_qualification));
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white));
-                    break;
-                case 18:
-                case 19:
-                case 20: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.relegation));
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white)); break;
-                default:holder.mPosition.setBackground(null);
-                    holder.mPosition.setTextColor(ContextCompat.getColor(mContext,android.R.color.tertiary_text_dark));
-            }
-
+        int pos = Integer.parseInt((String) holder.mPosition.getText());
+        switch (pos){
+            case 1:
+            case 2:
+            case 3: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.CL_group));
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white));
+                break;
+            case 4:  holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext, R.color.CL_qualification));
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                break;
+            case 5:
+            case 6: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext, R.color.EL_group));
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                break;
+            case 7: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.EL_qualification));
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white));
+                break;
+            case 18:
+            case 19:
+            case 20: holder.mPosition.setBackgroundColor(ContextCompat.getColor(mContext,R.color.relegation));
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext,R.color.white));
+                break;
+            default:holder.mPosition.setBackground(null);
+                holder.mPosition.setTextColor(ContextCompat.getColor(mContext,android.R.color.tertiary_text_dark));
+        }
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -108,15 +98,15 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public TextView mPosition;
-        public ImageView mLogo;
-        public TextView mTeam;
-        public TextView mPlayedGames;
-        public TextView mPoints;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        TextView mPosition;
+        ImageView mLogo;
+        TextView mTeam;
+        TextView mPlayedGames;
+        TextView mPoints;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mTeam = (TextView) mView.findViewById(R.id.table_item_team);

@@ -1,59 +1,42 @@
 package com.dinya.peter.livefootballresults;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.Toast;
 
-import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.database.DbHelper;
-import com.dinya.peter.livefootballresults.lists.MatchAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-import com.dinya.peter.livefootballresults.utils.NetworkUtils;
-
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements TableFragment.OnListFragmentInteractionListener {
 
-//    private static final int UPCOMING_GAMES_LOADER_ID = 1;
-//    private static final int FINISHED_GAMES_LOADER_ID = 2;
+    public static final int UPCOMING_GAMES_LOADER_ID = 1;
+    public static final int FINISHED_GAMES_LOADER_ID = 2;
+    public static final int TABLE_LOADER_ID = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
-
-//    private SQLiteDatabase mDb;
-//    private LoaderManager mLoaderManager;
+    /**
+     * Member variables
+     */
     Toolbar mToolbar;
     ViewPager mViewPager;
     FragmentPagerAdapter mFragmentPagerAdapter;
-    private CoordinatorLayout mContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+         * Setting up views
+         */
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -61,10 +44,14 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
         mViewPager.setAdapter(mFragmentPagerAdapter);
         TabLayout tableLayout = (TabLayout) findViewById(R.id.tab_layout);
         tableLayout.setupWithViewPager(mViewPager);
-        mContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
+
+        /*
+         * Start syncing data from remote server at first start
+         */
         BackgroundSyncUtils.initialize(this);
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
          getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -86,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
     public void onListFragmentInteraction() {
     }
 
+    /**
+     * Pager Adapter class
+     */
     private static class MyPagerAdapter extends FragmentPagerAdapter {
         private static final int COUNT = 3;
 

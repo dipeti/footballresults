@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
+import com.dinya.peter.livefootballresults.lists.TableAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -29,7 +28,7 @@ import java.util.List;
  */
 public class TableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int TABLE_LOADER_ID = 3;
+
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private LoaderManager mLoaderManager;
@@ -45,30 +44,41 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     public TableFragment() {
     }
 
+    public static Fragment newInstance() {
+        TableFragment fragment = new TableFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mAdapter = new TableAdapter(getContext());
-
         mLoaderManager = getActivity().getLoaderManager();
-        mLoaderManager.initLoader(TABLE_LOADER_ID, null, this);
-
+        mLoaderManager.initLoader(MainActivity.TABLE_LOADER_ID, null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_table, container, false);
 
-        // Set the adapter
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv_table);
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            }
-            recyclerView.setAdapter(mAdapter);
+        Context context = view.getContext();
+
+        /*
+         * RecyclerView initialization
+         */
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv_table);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
+        recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
 
+        /*
+         * SwipeToRefresh initialization
+         */
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh_table);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -81,8 +91,8 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void fetchData() {
-        BackgroundSyncUtils.startImmediateSync(getContext());
-        mSwipeRefreshLayout.setRefreshing(false);
+        if(!BackgroundSyncUtils.startImmediateSync(getContext()))
+            mSwipeRefreshLayout.setRefreshing(false);
     }
 
 
@@ -103,10 +113,15 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
         mListener = null;
     }
 
+    /**
+     * ------------------
+     * LoaderCallbacks
+     * ------------------
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id){
-            case TABLE_LOADER_ID:
+            case MainActivity.TABLE_LOADER_ID:
                 return new CursorLoader(getContext(),DbContract.TeamEntry.CONTENT_URI_TABLE,null,null,null,null);
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);
@@ -116,6 +131,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swap(data);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -123,12 +139,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
         mAdapter.swap(null);
     }
 
-    public static Fragment newInstance() {
-        TableFragment fragment = new TableFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     /**
      * This interface must be implemented by activities that contain this
