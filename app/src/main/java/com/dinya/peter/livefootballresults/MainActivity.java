@@ -7,6 +7,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
     Toolbar mToolbar;
     ViewPager mViewPager;
     FragmentPagerAdapter mFragmentPagerAdapter;
+    private CoordinatorLayout mContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +61,8 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
         mViewPager.setAdapter(mFragmentPagerAdapter);
         TabLayout tableLayout = (TabLayout) findViewById(R.id.tab_layout);
         tableLayout.setupWithViewPager(mViewPager);
-        if(NetworkUtils.isConnected(this))
-            BackgroundSyncUtils.initialize(this);
-        else Toast.makeText(this,"No internet connection", Toast.LENGTH_LONG).show();
-
-
-//            mLoaderManager = getLoaderManager();
-//            mLoaderManager.initLoader(UPCOMING_GAMES_LOADER_ID, null, this);
-//            DbHelper dbHelper = new DbHelper(this);
-//            mDb = dbHelper.getWritableDatabase();
+        mContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
+        BackgroundSyncUtils.initialize(this);
 
     }
     @Override
@@ -87,8 +83,7 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
     }
 
     @Override
-    public void onListFragmentInteraction(int teamId) {
-
+    public void onListFragmentInteraction() {
     }
 
     private static class MyPagerAdapter extends FragmentPagerAdapter {
@@ -128,38 +123,4 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
             }
         }
     }
-
-    /*
-     * ------------------
-     * LoaderCallbacks
-     * ------------------
-     */
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        String[] selectionArgs;
-//        switch (id){
-//            case UPCOMING_GAMES_LOADER_ID:
-//                selectionArgs = DbContract.getCurrentDateSelectionArgs();
-//                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-//                return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
-//            case FINISHED_GAMES_LOADER_ID:
-//                selectionArgs = DbContract.getCurrentDateSelectionArgs();
-//                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-//                return new CursorLoader(this,DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
-//            default:
-//                throw new RuntimeException("Loader Not Implemented: " + id);
-//        }
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        mMatchAdapter.swap(data);
-//    }
-//
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> loader) {
-//        mMatchAdapter.swap(null);
-//    }
-
 }

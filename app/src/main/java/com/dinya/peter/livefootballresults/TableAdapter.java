@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.dinya.peter.livefootballresults.TableFragment.OnListFragmentInteractionListener;
 import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.dummy.DummyContent.DummyItem;
 import com.dinya.peter.livefootballresults.utils.ResourceUtils;
 
 import java.util.List;

@@ -91,7 +91,6 @@ public class ResultsContentProvider extends ContentProvider {
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FINISHED_GAMES, GAMES_FINISHED);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_GAMES + "/"+ DbContract.PATH_FAVORITE_GAMES, GAMES_FAVORITE);
         uriMatcher.addURI(DbContract.AUTHORITY, DbContract.PATH_TABLE, TABLE);
-
         return uriMatcher;
     }
 
@@ -224,5 +223,69 @@ public class ResultsContentProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri,null);
         }
         return rowUpdated;
+    }
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        long id;
+        int rowsInserted;
+        switch (match){
+
+            case TEAMS:
+                db.beginTransaction();
+                rowsInserted = 0;
+                try {
+                    for (ContentValues value : values){
+                        id = db.insertWithOnConflict(DbContract.TeamEntry.TABLE_NAME,null, value, SQLiteDatabase.CONFLICT_REPLACE);
+                        if (-1 != id){
+                            rowsInserted++;
+                        }else {
+                            throw new SQLException("Failed to insert row: " + value.toString());
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                }
+                finally {
+                    db.endTransaction();
+                }
+                if (rowsInserted > 0){
+                    getContext().getContentResolver().notifyChange(uri,null);
+                }
+                return rowsInserted;
+
+            case GAMES:
+                db.beginTransaction();
+                rowsInserted = 0;
+                try {
+                    for (ContentValues value : values) {
+                        id = db.insertWithOnConflict(DbContract.GameEntry.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_REPLACE);
+                        if (-1 != id) {
+                            rowsInserted++;
+                        } else {
+                            throw new SQLException("Failed to insert row: " + value.toString());
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsInserted;
+
+            default:
+                return super.bulkInsert(uri, values);
+        }
+
+
+
+
+
+
+
+
     }
 }

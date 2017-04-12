@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,8 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.dummy.DummyContent;
-import com.dinya.peter.livefootballresults.dummy.DummyContent.DummyItem;
+import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private LoaderManager mLoaderManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private TableAdapter mAdapter;
 
     private OnListFragmentInteractionListener mListener;
@@ -67,7 +68,21 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
             }
             recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh_table);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchData();
+            }
+        });
+
         return view;
+    }
+
+    private void fetchData() {
+        BackgroundSyncUtils.startImmediateSync(getContext());
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 
@@ -105,7 +120,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mAdapter.swap(null);
     }
 
     public static Fragment newInstance() {
@@ -127,6 +142,6 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(int teamId);
+        void onListFragmentInteraction();
     }
 }

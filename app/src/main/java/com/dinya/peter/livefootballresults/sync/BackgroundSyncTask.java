@@ -14,6 +14,7 @@ import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BackgroundSyncTask {
@@ -47,9 +48,7 @@ public class BackgroundSyncTask {
             values.addAll(pastValues);
         ContentResolver resolver = context.getContentResolver();
         if (null != values && 0 != values.size()){
-            for (ContentValues value : values){
-            resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
-            }
+            resolver.bulkInsert(DbContract.GameEntry.CONTENT_URI_GAMES, values.toArray(new ContentValues[values.size()]));
         }
     }
 
@@ -58,9 +57,7 @@ public class BackgroundSyncTask {
         List<ContentValues> teamValues =  JSONParserUtils.getTeams(teamResult);
         ContentResolver resolver = context.getContentResolver();
                 if (null != teamValues && 0 != teamValues.size()){
-                    for (ContentValues value : teamValues){
-                        resolver.insert(DbContract.TeamEntry.CONTENT_URI_TEAMS,value);
-                    }
+                    resolver.bulkInsert(DbContract.TeamEntry.CONTENT_URI_TEAMS, teamValues.toArray(new ContentValues[teamValues.size()]));
                 }
     }
 
@@ -74,6 +71,7 @@ public class BackgroundSyncTask {
                 Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,Long.parseLong(id));
                 resolver.update(uri,value, DbContract.TeamEntry._ID + " = ?", new String[]{id});
             }
+            resolver.notifyChange(DbContract.TeamEntry.CONTENT_URI_TABLE,null);
         }
     }
 

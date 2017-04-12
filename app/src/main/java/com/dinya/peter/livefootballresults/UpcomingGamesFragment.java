@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,13 +19,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.lists.MatchAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
 import java.util.Arrays;
 
@@ -37,6 +36,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
     private static final int FINISHED_GAMES_LOADER_ID = 2;
 
     private RecyclerView mMatchesRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     MatchAdapter mMatchAdapter;
     private SQLiteDatabase mDb;
     private LoaderManager mLoaderManager;
@@ -90,7 +90,21 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         mMatchesRecyclerView.setLayoutManager(linearLayoutManager);
         mMatchesRecyclerView.setAdapter(mMatchAdapter);
         mMatchesRecyclerView.setHasFixedSize(true);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh_upcoming_games);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchData();
+            }
+        });
+
         return view;
+    }
+
+    private void fetchData() {
+        BackgroundSyncUtils.startImmediateSync(getContext());
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
