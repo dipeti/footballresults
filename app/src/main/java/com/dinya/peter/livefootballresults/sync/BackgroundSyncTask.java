@@ -16,30 +16,19 @@ import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
 import java.util.List;
 
-public class BackgroundSyncUtils {
-    private static final String TAG = BackgroundSyncUtils.class.getSimpleName();
+public class BackgroundSyncTask {
 
-
+    private static final String TAG = BackgroundSyncTask.class.getSimpleName();
 
     synchronized public static void startSync(@NonNull final Context context){
-        Thread syncData = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Log.d(TAG, "syncGames running....");
-                    startSyncGames(context);
-                    startSyncTable(context);
-                } catch (NullPointerException ex){
-                    ex.printStackTrace();
-                }
-                Log.d(TAG, "syncGames finished....");
-            }
-        });
-
-        syncData.start();
-
-
-
+        try{
+            Log.d(TAG, "syncGames running....");
+            startSyncGames(context); // if the teams are not synced yet, it will start startSyncTeam();
+            startSyncTable(context);
+        } catch (NullPointerException ex){
+            ex.printStackTrace();
+        }
+        Log.d(TAG, "syncGames finished....");
     }
 
     synchronized private static void startSyncGames(Context context) {

@@ -32,6 +32,8 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/SettingsTheme"
             />
+        <service android:name=".sync.BackgroundSyncIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>
