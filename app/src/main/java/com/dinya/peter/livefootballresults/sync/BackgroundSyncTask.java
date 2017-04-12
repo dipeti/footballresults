@@ -19,12 +19,9 @@ import java.util.List;
 public class BackgroundSyncUtils {
     private static final String TAG = BackgroundSyncUtils.class.getSimpleName();
 
-    private static boolean sInitialized;
 
-    synchronized public static void initialize(@NonNull final Context context){
-        Log.d(TAG, "Initialized: " + sInitialized);
-        if  (sInitialized) return;
-        sInitialized = true;
+
+    synchronized public static void startSync(@NonNull final Context context){
         Thread syncData = new Thread(new Runnable() {
             @Override
             public void run() {
