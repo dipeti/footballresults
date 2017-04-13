@@ -1,6 +1,9 @@
 package com.dinya.peter.livefootballresults;
 
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,10 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.dinya.peter.livefootballresults.database.DbContract;
+import com.dinya.peter.livefootballresults.lists.TableAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
-public class MainActivity extends AppCompatActivity implements TableFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TableFragment.OnTableFragmentInteractionListener {
 
     public static final int UPCOMING_GAMES_LOADER_ID = 1;
     public static final int FINISHED_GAMES_LOADER_ID = 2;
@@ -70,8 +76,10 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
     }
 
     @Override
-    public void onListFragmentInteraction() {
+    public void onTableFragmentInteraction(long teamId) {
+
     }
+
 
     /**
      * Pager Adapter class

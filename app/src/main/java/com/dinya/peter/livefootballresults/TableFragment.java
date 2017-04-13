@@ -1,10 +1,12 @@
 package com.dinya.peter.livefootballresults;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.lists.TableAdapter;
@@ -25,10 +28,10 @@ import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnTableFragmentInteractionListener}
  * interface.
  */
-public class TableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, TableAdapter.ListItemClickListener {
 
 
     // TODO: Customize parameters
@@ -39,7 +42,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private LinearLayout mHeader;
 
-    private OnListFragmentInteractionListener mListener;
+    private OnTableFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private TextView mEmptyView;
     private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
@@ -75,7 +78,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new TableAdapter(getContext());
+        mAdapter = new TableAdapter(getContext(), this);
         mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mLoaderManager = getActivity().getLoaderManager();
         mLoaderManager.initLoader(MainActivity.TABLE_LOADER_ID, null, this);
@@ -128,8 +131,8 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnTableFragmentInteractionListener) {
+            mListener = (OnTableFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -169,6 +172,16 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
+    @Override
+    public void listItemClick(long id) {
+        Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,id);
+        Cursor cursor = getContext().getContentResolver().query(uri,null, DbContract.TeamEntry._ID + " = ?",new String[]{String.valueOf(id)},null);
+        if(cursor != null && cursor.moveToFirst()){
+            String text = cursor.getString(cursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_NAME));
+            Toast.makeText(getContext(),text,Toast.LENGTH_LONG).show();
+            cursor.close();
+        }
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -180,8 +193,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction();
+    public interface OnTableFragmentInteractionListener {
+        void onTableFragmentInteraction(long teamId);
     }
 }

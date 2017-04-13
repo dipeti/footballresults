@@ -119,6 +119,9 @@ public class ResultsContentProvider extends ContentProvider {
             case TEAMS:
                 cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs, null, null, sortOrder);
                 break;
+            case TEAM_WITH_ID:
+                cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                break;
             case GAMES_UPCOMING:
                 cursorToReturn = db.rawQuery(SELECT_UPCOMING_GAMES,selectionArgs);
                 Log.d(TAG, "query: " + SELECT_UPCOMING_GAMES);

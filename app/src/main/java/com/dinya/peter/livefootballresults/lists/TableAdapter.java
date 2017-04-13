@@ -18,11 +18,11 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     private Cursor mCursor;
     private Context mContext;
-//    private final OnListFragmentInteractionListener mListener;
+    private final ListItemClickListener mListener;
 
-    public TableAdapter(Context context) {
+    public TableAdapter(Context context, ListItemClickListener listener ) {
         mContext = context;
-//        mListener = listener;
+        mListener = listener;
     }
 
     @Override
@@ -73,17 +73,6 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
             default:holder.mPosition.setBackground(null);
                 holder.mPosition.setTextColor(ContextCompat.getColor(mContext,android.R.color.tertiary_text_dark));
         }
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(id);
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -109,6 +98,17 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         ViewHolder(View view) {
             super(view);
             mView = view;
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        int position = getAdapterPosition();
+                        mCursor.moveToPosition(position);
+                        long id = mCursor.getLong(mCursor.getColumnIndex(DbContract.TeamEntry._ID));
+                        mListener.listItemClick(id);
+                    }
+                }
+            });
             mTeam = (TextView) mView.findViewById(R.id.table_item_team);
             mLogo = (ImageView) mView.findViewById(R.id.table_item_logo);
             mPosition = (TextView) mView.findViewById(R.id.table_item_position);
@@ -120,5 +120,9 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         public String toString() {
             return super.toString();
         }
+    }
+
+    public interface ListItemClickListener{
+        void listItemClick(long id);
     }
 }
