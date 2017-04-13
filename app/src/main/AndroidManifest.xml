@@ -35,6 +35,13 @@
             />
         <service android:name=".sync.BackgroundSyncIntentService"
             android:exported="false"/>
+    <activity android:name=".TeamActivity"
+        android:label="Players"
+        android:parentActivityName=".MainActivity"
+        android:theme="@style/AppTheme"
+        >
+    </activity>
     </application>
+
 
 </manifest>

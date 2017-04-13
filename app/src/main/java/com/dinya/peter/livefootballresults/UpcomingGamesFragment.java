@@ -60,7 +60,6 @@ public class UpcomingGamesFragment extends GamesFragment {
             }
         });
         mLoaderManager.initLoader(MainActivity.UPCOMING_GAMES_LOADER_ID, null, this);
-        mAdapterDataObserver.onChanged();
         return view;
     }
 

@@ -31,6 +31,7 @@ public class NetworkUtils {
     private static final String FIXTURES_API_PATH = "v1/competitions/426/fixtures";
     private static final String TEAMS_API_PATH = "v1/competitions/426/teams";
     private static final String TABLE_API_PATH = "v1/competitions/426/leagueTable";
+    private static final String PLAYERS_API_PATH  = "v1/teams/?/players";
     /**
      * Parameters
      */
@@ -39,6 +40,22 @@ public class NetworkUtils {
     private static final String UPCOMING_DAYS_VALUE = "n" + UPCOMING_DAYS ;
     private static final String PAST_DAYS_VALUE = "p" + PAST_DAYS ;
     private static final String TIMEFRAME_PARAM = "timeFrame";
+
+    public static URL buildPlayersForTeamURL(long id){
+        Uri queryURi = Uri.parse(BASE_API_URL)
+                .buildUpon()
+                .appendEncodedPath(PLAYERS_API_PATH.replace("?",String.valueOf(id)))
+                .build();
+        try {
+            URL url = new URL(queryURi.toString());
+            Log.v(TAG, "Converted URL: " + url);
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Cannot convert Uri to URL: " + queryURi.toString());
+            return null;
+        }
+    }
 
     /**
      * Builds a URL for querying the upcoming matches

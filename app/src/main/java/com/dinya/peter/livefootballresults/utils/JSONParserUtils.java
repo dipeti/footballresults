@@ -9,6 +9,7 @@ import android.util.Log;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.database.DbHelper;
 import com.dinya.peter.livefootballresults.entity.Match;
+import com.dinya.peter.livefootballresults.entity.Player;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +32,49 @@ public class JSONParserUtils {
     private JSONParserUtils() {
     }
 
+    public static List<Player> getPlayers(String jsonString){
+        List<Player> players;
+        try {
+            JSONObject baseJsonResponse = new JSONObject(jsonString);
+            JSONArray playersArray = baseJsonResponse.getJSONArray("players");
+            int size = playersArray.length();
+            players = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                JSONObject gameJsonObject = playersArray.getJSONObject(i);
+                String nationality = "N/A";
+                int jerseyNumber = -1;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date dateOfBirth = simpleDateFormat.parse("2017-01-25");
+                Date contractUntil = simpleDateFormat.parse("2017-01-25");
+                String marketValue = "N/A";
+                String name = gameJsonObject.getString("name");
+                String position = gameJsonObject.getString("position");
+
+                if (!gameJsonObject.isNull("jerseyNumber"))
+                jerseyNumber = gameJsonObject.getInt("jerseyNumber");
+
+
+                if (!gameJsonObject.isNull("dateOfBirth"))
+                    dateOfBirth = simpleDateFormat.parse(gameJsonObject.getString("dateOfBirth"));
+                if (!gameJsonObject.isNull("nationality"))
+                nationality = gameJsonObject.getString("nationality");
+                if (!gameJsonObject.isNull("contractUntil"))
+                contractUntil = simpleDateFormat.parse(gameJsonObject.getString("contractUntil"));
+                if (!gameJsonObject.isNull("marketValue"))
+                marketValue = gameJsonObject.getString("marketValue");
+                players.add(new Player(name,position,jerseyNumber,dateOfBirth,nationality,contractUntil,marketValue));
+            }
+            return players;
+        }
+        catch (JSONException ex){
+            Log.e("JSONParserUtil", "Problem parsing the players JSON results: " + jsonString, ex);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
     public static List<ContentValues> getGames(String jsonString){
         List<ContentValues> values;
         try {

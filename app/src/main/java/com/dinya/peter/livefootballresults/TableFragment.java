@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -81,7 +82,6 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
         mAdapter = new TableAdapter(getContext(), this);
         mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mLoaderManager = getActivity().getLoaderManager();
-        mLoaderManager.initLoader(MainActivity.TABLE_LOADER_ID, null, this);
     }
     @Override
     public void onDestroy() {
@@ -118,7 +118,7 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
-        mAdapterDataObserver.onChanged();
+        mLoaderManager.initLoader(MainActivity.TABLE_LOADER_ID, null, this);
         return view;
     }
 
@@ -174,13 +174,16 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void listItemClick(long id) {
-        Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,id);
-        Cursor cursor = getContext().getContentResolver().query(uri,null, DbContract.TeamEntry._ID + " = ?",new String[]{String.valueOf(id)},null);
-        if(cursor != null && cursor.moveToFirst()){
-            String text = cursor.getString(cursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_NAME));
-            Toast.makeText(getContext(),text,Toast.LENGTH_LONG).show();
-            cursor.close();
-        }
+//        Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,id);
+//        Cursor cursor = getContext().getContentResolver().query(uri,null, DbContract.TeamEntry._ID + " = ?",new String[]{String.valueOf(id)},null);
+//        if(cursor != null && cursor.moveToFirst()){
+//            String text = cursor.getString(cursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_NAME));
+//            Toast.makeText(getContext(),text,Toast.LENGTH_LONG).show();
+//            cursor.close();
+//        }
+        Intent intent = new Intent(getContext(),TeamActivity.class);
+        intent.putExtra("id", id);
+        getActivity().startActivity(intent);
     }
 
     /**

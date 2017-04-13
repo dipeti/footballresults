@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.entity.Match;
+import com.dinya.peter.livefootballresults.entity.Player;
 import com.dinya.peter.livefootballresults.utils.JSONParserUtils;
 import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
@@ -16,10 +17,12 @@ import java.net.URL;
 import java.util.List;
 
 
-public class MatchLoader extends AsyncTaskLoader<Cursor> {
-    Cursor result;
-    public MatchLoader(Context context) {
+public class PlayerLoader extends AsyncTaskLoader<List<Player>> {
+    List<Player> result;
+    long mId;
+    public PlayerLoader(Context context, long id) {
         super(context);
+        mId = id;
     }
 
     @Override
@@ -29,30 +32,22 @@ public class MatchLoader extends AsyncTaskLoader<Cursor> {
             deliverResult(result);
         } else if(NetworkUtils.isConnected(getContext())) {
             forceLoad();
-        } else{
-            Toast.makeText(getContext(),"No internet connection!", Toast.LENGTH_LONG).show();
         }
 
     }
 
     @Override
-    public void deliverResult(Cursor data) {
+    public void deliverResult(List<Player> data) {
         result = data;
         super.deliverResult(data);
     }
 
     @Override
-    public Cursor loadInBackground() {
-        URL url = NetworkUtils.buildUpcomingMatchesURL();
+    public List<Player> loadInBackground() {
+        URL url = NetworkUtils.buildPlayersForTeamURL(mId);
         String response = NetworkUtils.getResponseFromURL(url);
-        List<ContentValues> values = JSONParserUtils.getGames(response);
-        ContentResolver resolver = getContext().getContentResolver();
-        if (values != null) {
-            for (ContentValues value : values){
-               resolver.insert(DbContract.GameEntry.CONTENT_URI_GAMES,value);
-            }
-        }
-        return resolver.query(DbContract.GameEntry.CONTENT_URI_GAMES,null,null,null,null);
+        List<Player> values = JSONParserUtils.getPlayers(response);
+        return values;
     }
 
 

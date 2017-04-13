@@ -67,7 +67,6 @@ public class FinishedGamesFragment extends GamesFragment {
          * Otherwise {@link mEmptyView} may flash inconveniently before the loader has finished.
          */
         mLoaderManager.initLoader(MainActivity.FINISHED_GAMES_LOADER_ID, null, this);
-        mAdapterDataObserver.onChanged();
         return view;
     }
 
