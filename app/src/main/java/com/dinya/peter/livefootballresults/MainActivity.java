@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnL
         /*
          * Start syncing data from remote server at first start
          */
-        BackgroundSyncUtils.initialize(this);
+        //BackgroundSyncUtils.initialize(this);
 
     }
 

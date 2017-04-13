@@ -1,60 +1,25 @@
 package com.dinya.peter.livefootballresults;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.lists.MatchAdapter;
-import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-
-import java.util.Arrays;
+import com.dinya.peter.livefootballresults.utils.GamesFragment;
 
 
 
-public class FinishedGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class FinishedGamesFragment extends GamesFragment {
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
-    private TextView mEmptyView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    MatchAdapter mMatchAdapter;
-    private LoaderManager mLoaderManager;
-
 //    private OnFragmentInteractionListener mListener;
-    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-    @Override
-    public void onChanged() {
-        if(0 == mMatchAdapter.getItemCount()){
-            mRecyclerView.setVisibility(View.INVISIBLE);
-            mEmptyView.setVisibility(View.VISIBLE);
-        }else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyView.setVisibility(View.INVISIBLE);
-        }
-    }
-};
-
-    public FinishedGamesFragment() {
-        // Required empty public constructor
-    }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -67,25 +32,6 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        mLoaderManager = getActivity().getLoaderManager();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-        mMatchAdapter = new MatchAdapter();
-        mMatchAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-        mMatchAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,7 +48,7 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setAdapter(mMatchAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         /*
          * SwipeToRefresh initialization
@@ -125,15 +71,6 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    private void fetchData() {
-        if(!BackgroundSyncUtils.startImmediateSync(getContext()))
-            mSwipeRefreshLayout.setRefreshing(false);
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
@@ -159,46 +96,6 @@ public class FinishedGamesFragment extends Fragment implements LoaderManager.Loa
 //        mListener = null;
     }
 
-    /**
-     * ------------------
-     * LoaderCallbacks
-     * ------------------
-     */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mEmptyView.setVisibility(View.INVISIBLE);
-        String[] selectionArgs;
-        switch (id){
-            case MainActivity.FINISHED_GAMES_LOADER_ID:
-                int daysPast = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("days_past", "5"));
-                selectionArgs = DbContract.getDateSelectionArgs(-daysPast); // games in the past 'dayDiff' days
-                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-                return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_FINISHED_GAMES,null, null, selectionArgs,null);
-            default:
-                throw new RuntimeException("Loader Not Implemented: " + id);
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMatchAdapter.swap(data);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mMatchAdapter.swap(null);
-    }
-
-    /*
-     * ------------------
-     * OnSharedPreferenceChangeListener
-     * ------------------
-     */
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mLoaderManager.restartLoader(MainActivity.FINISHED_GAMES_LOADER_ID,null,this);
-    }
 
     /**
      * This interface must be implemented by activities that contain this

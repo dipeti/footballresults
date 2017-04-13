@@ -35,9 +35,11 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
     private static final String TAG = MatchAdapter.class.getSimpleName();
     private Cursor mGames;
+    private onGameClickListener mClickListener;
 
-    public MatchAdapter() {
+    public MatchAdapter(onGameClickListener ClickListener) {
 
+        this.mClickListener = ClickListener;
     }
 
     public void swap(Cursor games)
@@ -53,7 +55,6 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.match_list_item,parent,false);
         view.setFocusable(true);
-
         return new MatchViewHolder(view);
     }
 
@@ -91,6 +92,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         holder.listItemDate.setText(dateString);
         holder.listItemHomeLogo.setImageResource(ResourceUtils.getLogoResource(mGames.getInt(mGames.getColumnIndex(DbContract.TeamEntry.ALIAS_HOME_ID))));
         holder.listItemAwayLogo.setImageResource(ResourceUtils.getLogoResource(mGames.getInt(mGames.getColumnIndex(DbContract.TeamEntry.ALIAS_AWAY_ID))));
+
     }
 
     @Override
@@ -100,7 +102,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     }
 
 
-    class MatchViewHolder extends RecyclerView.ViewHolder {
+    class MatchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final TextView listItemHomeTeam;
         final TextView listItemHomeScore;
@@ -112,6 +114,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
         MatchViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             listItemHomeTeam = (TextView) itemView.findViewById(R.id.list_item_tv_home_team);
             listItemHomeScore = (TextView) itemView.findViewById(R.id.list_item_tv_home_score);
             listItemAwayTeam  = (TextView) itemView.findViewById(R.id.list_item_tv_away_team);
@@ -120,5 +123,17 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             listItemHomeLogo = (ImageView) itemView.findViewById(R.id.list_item_iv_home_logo);
             listItemAwayLogo = (ImageView) itemView.findViewById(R.id.list_item_iv_away_logo);
         }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mGames.moveToPosition(position);
+            long id = mGames.getLong(mGames.getColumnIndex(DbContract.GameEntry._ID));
+            mClickListener.onClick(id);
+        }
+    }
+
+    public interface onGameClickListener{
+        void onClick(long id);
     }
 }

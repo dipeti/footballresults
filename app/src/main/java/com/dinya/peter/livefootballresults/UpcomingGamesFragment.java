@@ -1,60 +1,24 @@
 package com.dinya.peter.livefootballresults;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.dinya.peter.livefootballresults.database.DbContract;
-import com.dinya.peter.livefootballresults.lists.MatchAdapter;
-import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
-
-import java.util.Arrays;
+import com.dinya.peter.livefootballresults.utils.GamesFragment;
 
 
 
-public class UpcomingGamesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class UpcomingGamesFragment extends GamesFragment {
 
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    MatchAdapter mMatchAdapter;
-    private LoaderManager mLoaderManager;
-
 //    private OnFragmentInteractionListener mListener;
-
-    private RecyclerView mRecyclerView;
-    private TextView mEmptyView;
-    private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-        @Override
-        public void onChanged() {
-            if (0 == mMatchAdapter.getItemCount()) {
-                mRecyclerView.setVisibility(View.GONE);
-                mEmptyView.setVisibility(View.VISIBLE);
-            } else {
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mEmptyView.setVisibility(View.GONE);
-            }
-        }
-    };
-    public UpcomingGamesFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -70,26 +34,8 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mMatchAdapter = new MatchAdapter();
-        mMatchAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-        mLoaderManager = getActivity().getLoaderManager();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMatchAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-        PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming_games, container, false);
         mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         /*
@@ -100,7 +46,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setAdapter(mMatchAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
 
         /*
@@ -118,10 +64,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
         return view;
     }
 
-    private void fetchData() {
-        if(!BackgroundSyncUtils.startImmediateSync(getContext()))
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
@@ -147,46 +90,7 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
 //        mListener = null;
     }
 
-    /**
-     * ------------------
-     * LoaderCallbacks
-     * ------------------
-     */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mEmptyView.setVisibility(View.INVISIBLE);
-        String[] selectionArgs;
-        switch (id){
-            case MainActivity.UPCOMING_GAMES_LOADER_ID:
-                int daysAhead = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("days_ahead", "5"));
-                selectionArgs = DbContract.getDateSelectionArgs(daysAhead); // games in the upcoming 'dayDiff' days
-                Log.d(TAG, "Selection: " + Arrays.toString(selectionArgs));
-                return new CursorLoader(getActivity(),DbContract.GameEntry.CONTENT_URI_UPCOMING_GAMES,null, null, selectionArgs,null);
-            default:
-                throw new RuntimeException("Loader Not Implemented: " + id);
-        }
-    }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMatchAdapter.swap(data);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mMatchAdapter.swap(null);
-    }
-
-    /*
-     * ------------------
-     * OnSharedPreferenceChangeListener
-     * ------------------
-     */
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mLoaderManager.restartLoader(MainActivity.UPCOMING_GAMES_LOADER_ID,null,this);
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -203,3 +107,5 @@ public class UpcomingGamesFragment extends Fragment implements LoaderManager.Loa
 //        void onFragmentInteraction(Uri uri);
 //    }
 }
+
+

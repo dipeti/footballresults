@@ -42,6 +42,7 @@ public class ResultsContentProvider extends ContentProvider {
             DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry._ID + " AS " + DbContract.TeamEntry.ALIAS_AWAY_ID +  ", " +
             DbContract.TeamEntry.ALIAS_TABLE_FIRST + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_HOME_TEAM +  ", " +
             DbContract.TeamEntry.ALIAS_TABLE_SECOND + "." + DbContract.TeamEntry.COLUMN_TEAM_SHORT_NAME + " AS " + DbContract.TeamEntry.ALIAS_AWAY_TEAM + ", " +
+            DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry._ID + ", " +
             DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_HOME_SCORE + ", " +
             DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_AWAY_SCORE + ", " +
             DbContract.GameEntry.TABLE_NAME + "." + DbContract.GameEntry.COLUMN_DATE;
@@ -125,6 +126,9 @@ public class ResultsContentProvider extends ContentProvider {
             case GAMES_FINISHED:
                 cursorToReturn = db.rawQuery(SELECT_FINISHED_GAMES,selectionArgs);
                 Log.d(TAG, "query: " + SELECT_FINISHED_GAMES);
+                break;
+            case GAME_WITH_ID:
+                cursorToReturn = db.query(DbContract.GameEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             case TABLE:
                 cursorToReturn = db.query(DbContract.TeamEntry.TABLE_NAME,projection,selection,selectionArgs,null,null, DbContract.TeamEntry.COLUMN_TEAM_POSITION + " ASC ");
