@@ -1,6 +1,7 @@
 package com.dinya.peter.livefootballresults;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,12 +21,6 @@ public class FinishedGamesFragment extends GamesFragment {
     private static final String TAG = FinishedGamesFragment.class.getSimpleName();
 
 //    private OnFragmentInteractionListener mListener;
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment FinishedGamesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FinishedGamesFragment newInstance() {
         FinishedGamesFragment fragment = new FinishedGamesFragment();
         Bundle args = new Bundle();
@@ -36,7 +31,6 @@ public class FinishedGamesFragment extends GamesFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_finished_games, container, false);
 
         mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
@@ -93,6 +87,16 @@ public class FinishedGamesFragment extends GamesFragment {
     public void onDetach() {
         super.onDetach();
 //        mListener = null;
+    }
+
+    /*
+     * ------------------
+     * OnSharedPreferenceChangeListener
+     * ------------------
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mLoaderManager.restartLoader(MainActivity.FINISHED_GAMES_LOADER_ID,null,this);
     }
 
 

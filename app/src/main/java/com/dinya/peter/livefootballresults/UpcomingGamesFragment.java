@@ -1,6 +1,7 @@
 package com.dinya.peter.livefootballresults;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -89,7 +90,15 @@ public class UpcomingGamesFragment extends GamesFragment {
 //        mListener = null;
     }
 
-
+    /*
+     * ------------------
+     * OnSharedPreferenceChangeListener
+     * ------------------
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mLoaderManager.restartLoader(MainActivity.UPCOMING_GAMES_LOADER_ID,null,this);
+    }
 
     /**
      * This interface must be implemented by activities that contain this

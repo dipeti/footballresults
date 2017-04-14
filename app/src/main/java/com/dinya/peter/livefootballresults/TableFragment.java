@@ -26,24 +26,16 @@ import com.dinya.peter.livefootballresults.lists.TableAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnTableFragmentInteractionListener}
- * interface.
- */
 public class TableFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, TableAdapter.ListItemClickListener {
 
 
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private LoaderManager mLoaderManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TableAdapter mAdapter;
 
     private LinearLayout mHeader;
 
-    private OnTableFragmentInteractionListener mListener;
+//    private OnTableFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private TextView mEmptyView;
     private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
@@ -93,19 +85,16 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_table, container, false);
 
-        Context context = view.getContext();
-
         mHeader = (LinearLayout) view.findViewById(R.id.ll_table_header);
         mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         /*
          * RecyclerView initialization
          */
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_table);
-        if (mColumnCount <= 1) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        }
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),linearLayoutManager.getOrientation()));
 
         /*
          * SwipeToRefresh initialization
@@ -131,18 +120,18 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnTableFragmentInteractionListener) {
-            mListener = (OnTableFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+//        if (context instanceof OnTableFragmentInteractionListener) {
+//            mListener = (OnTableFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnListFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     /**
@@ -174,15 +163,8 @@ public class TableFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void listItemClick(long id) {
-//        Uri uri = ContentUris.withAppendedId(DbContract.TeamEntry.CONTENT_URI_TEAMS,id);
-//        Cursor cursor = getContext().getContentResolver().query(uri,null, DbContract.TeamEntry._ID + " = ?",new String[]{String.valueOf(id)},null);
-//        if(cursor != null && cursor.moveToFirst()){
-//            String text = cursor.getString(cursor.getColumnIndex(DbContract.TeamEntry.COLUMN_TEAM_NAME));
-//            Toast.makeText(getContext(),text,Toast.LENGTH_LONG).show();
-//            cursor.close();
-//        }
         Intent intent = new Intent(getContext(),TeamActivity.class);
-        intent.putExtra("id", id);
+        intent.putExtra(MainActivity.INTENT_EXTRA_ID, id);
         getActivity().startActivity(intent);
     }
 

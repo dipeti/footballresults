@@ -5,4 +5,18 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_settings">Settings</string>
     <string name="no_items_available">There are no items available.</string>
+    <string name="team_value">"Team value: %s"</string>
+    <string name="score_separator">-</string>
+    <string name="player_nationality">Nationality:</string>
+    <string name="player_market_value">Market Value:</string>
+    <string name="player_date_of_birth">Date of birth:</string>
+    <string name="player_contract_until">Contract until:</string>
+    <string name="hashmark">#</string>
+    <string name="table_header_team">Team</string>
+    <string name="table_header_match_played">MP</string>
+    <string name="table_header_points">Pts</string>
+    <string name="menu_settings">Settings</string>
+    <string name="page_title_first">Finished</string>
+    <string name="page_title_second">Upcoming</string>
+    <string name="page_title_third">Standings</string>
 </resources>

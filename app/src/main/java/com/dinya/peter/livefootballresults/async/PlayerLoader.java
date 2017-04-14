@@ -30,9 +30,9 @@ public class PlayerLoader extends AsyncTaskLoader<List<Player>> {
         super.onStartLoading();
         if(null != result){
             deliverResult(result);
-        } else if(NetworkUtils.isConnected(getContext())) {
-            forceLoad();
         }
+        forceLoad();
+
 
     }
 
@@ -44,11 +44,17 @@ public class PlayerLoader extends AsyncTaskLoader<List<Player>> {
 
     @Override
     public List<Player> loadInBackground() {
-        URL url = NetworkUtils.buildPlayersForTeamURL(mId);
-        String response = NetworkUtils.getResponseFromURL(url);
-        List<Player> values = JSONParserUtils.getPlayers(response);
-        return values;
+        if (NetworkUtils.isConnected(getContext())){
+            URL url = NetworkUtils.buildPlayersForTeamURL(mId);
+            String response = NetworkUtils.getResponseFromURL(url);
+            List<Player> values = JSONParserUtils.getPlayers(response);
+            return values;
+        }
+        return null;
     }
+
+
+
 
 
 }

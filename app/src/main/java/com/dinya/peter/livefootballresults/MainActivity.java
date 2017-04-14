@@ -1,6 +1,7 @@
 package com.dinya.peter.livefootballresults;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +22,14 @@ import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.lists.TableAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
 
-public class MainActivity extends AppCompatActivity implements TableFragment.OnTableFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final int UPCOMING_GAMES_LOADER_ID = 1;
     public static final int FINISHED_GAMES_LOADER_ID = 2;
     public static final int TABLE_LOADER_ID = 3;
+
+    public static final String INTENT_EXTRA_ID = "id";
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
@@ -46,21 +51,21 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnT
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mFragmentPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        mFragmentPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(), this);
         mViewPager.setAdapter(mFragmentPagerAdapter);
         TabLayout tableLayout = (TabLayout) findViewById(R.id.tab_layout);
         tableLayout.setupWithViewPager(mViewPager);
 
         /*
-         * Start syncing data from remote server at first start
+         * Start syncing data from remote server at first start.
          */
-        //BackgroundSyncUtils.initialize(this);
+        BackgroundSyncUtils.initialize(this);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-         getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -75,20 +80,16 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnT
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onTableFragmentInteraction(long teamId) {
-
-    }
-
-
     /**
      * Pager Adapter class
      */
     private static class MyPagerAdapter extends FragmentPagerAdapter {
         private static final int COUNT = 3;
+        private Context mContext;
 
-        MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
+            mContext = context;
         }
 
         @Override
@@ -113,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements TableFragment.OnT
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return "Finished";
-                case 1: return "Upcoming";
-                case 2: return "Table";
+                case 0: return mContext.getString(R.string.page_title_first);
+                case 1: return mContext.getString(R.string.page_title_second);
+                case 2: return mContext.getString(R.string.page_title_third);
                 default:
                     return "error";
             }

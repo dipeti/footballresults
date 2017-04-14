@@ -70,7 +70,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
         try {
             Date date = fromFormat.parse(dateString);
-            SimpleDateFormat toFormat = new SimpleDateFormat("HH:mm - d MMM yyyy");
+            SimpleDateFormat toFormat = new SimpleDateFormat("HH:mm - d MMM yyyy",Locale.ENGLISH);
             dateString = toFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -129,6 +129,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             int position = getAdapterPosition();
             mGames.moveToPosition(position);
             long id = mGames.getLong(mGames.getColumnIndex(DbContract.GameEntry._ID));
+
             mClickListener.onClick(id);
         }
     }

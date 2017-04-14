@@ -14,7 +14,7 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:text="#"/>
+        android:text="@string/hashmark"/>
     <Space
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -28,7 +28,7 @@
         android:padding="10dp"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:text="Team"
+        android:text="@string/table_header_team"
         />
     <TextView
         android:id="@+id/table_item_played_games_label"
@@ -38,7 +38,7 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:text="MP"
+        android:text="@string/table_header_match_played"
         />
     <TextView
         android:id="@+id/table_item_points_label"
@@ -48,6 +48,6 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:text="Pts"
+        android:text="@string/table_header_points"
         />
 </LinearLayout>

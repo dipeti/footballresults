@@ -112,16 +112,9 @@ abstract public class GamesFragment extends Fragment implements
         mAdapter.swap(null);
     }
 
-    /*
-     * ------------------
-     * OnSharedPreferenceChangeListener
-     * ------------------
+    /**
+     * MatchAdapter.onGameClickListener
      */
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mLoaderManager.restartLoader(MainActivity.UPCOMING_GAMES_LOADER_ID,null,this);
-    }
-
     @Override
     public void onClick(long id) {
         Uri uri = ContentUris.withAppendedId(DbContract.GameEntry.CONTENT_URI_GAMES,id);
@@ -131,7 +124,7 @@ abstract public class GamesFragment extends Fragment implements
             homeOdds = cursor.getString(cursor.getColumnIndex(DbContract.GameEntry.COLUMN_HOME_ODDS));
             awayOdds = cursor.getString(cursor.getColumnIndex(DbContract.GameEntry.COLUMN_AWAY_ODDS));
             drawOdds = cursor.getString(cursor.getColumnIndex(DbContract.GameEntry.COLUMN_DRAW_ODDS));
-            String text = "Home: " + homeOdds + " \t\t|\t\t Draw: " + drawOdds + " \t\t|\t\t Away: " + awayOdds;
+            String text = "Home: " + homeOdds + "\t\t|\t\tDraw: " + drawOdds + "\t\t|\t\tAway: " + awayOdds;
             if (null != mToast ){
                 mToast.cancel();
             }

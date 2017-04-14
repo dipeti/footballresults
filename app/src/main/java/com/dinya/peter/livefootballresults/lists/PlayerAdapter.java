@@ -50,7 +50,7 @@ public class PlayerAdapter extends ExpandableRecyclerAdapter<Player,Player.Playe
     @NonNull
     @Override
     public PlayerDetailsViewHolder onCreateChildViewHolder(@NonNull ViewGroup childViewGroup, int viewType) {
-        View view = LayoutInflater.from(childViewGroup.getContext()).inflate(R.layout.player_list_item,childViewGroup,false);
+        View view = LayoutInflater.from(childViewGroup.getContext()).inflate(R.layout.player_details_list_item,childViewGroup,false);
         return new PlayerDetailsViewHolder(view);
     }
 
@@ -72,21 +72,23 @@ public class PlayerAdapter extends ExpandableRecyclerAdapter<Player,Player.Playe
         TextView tvJersey;
         TextView tvName;
         TextView tvPosition;
-        TextView tvNationality;
 
         PlayerViewHolder(View itemView) {
             super(itemView);
             tvJersey = (TextView) itemView.findViewById(R.id.player_item_jersey);
             tvName = (TextView) itemView.findViewById(R.id.player_item_name);
             tvPosition = (TextView) itemView.findViewById(R.id.player_item_position);
-            tvNationality = (TextView) itemView.findViewById(R.id.player_item_nationality);
         }
 
         void bind(Player player) {
             tvName.setText(player.getName());
-            tvJersey.setText(String.valueOf(player.getJerseyNumber()));
+            if (player.getJerseyNumber()==Integer.MAX_VALUE){
+                tvJersey.setText("N/A");
+            }else{
+                tvJersey.setText(String.valueOf(player.getJerseyNumber()));
+            }
+
             tvPosition.setText(player.getPosition());
-            tvNationality.setText(player.getNationality());
         }
     }
 
@@ -98,18 +100,21 @@ public class PlayerAdapter extends ExpandableRecyclerAdapter<Player,Player.Playe
         TextView tvMarketValue;
         TextView tvContractUntil;
         TextView tvDateOfBirth;
+        TextView tvNationality;
 
         PlayerDetailsViewHolder(View itemView) {
             super(itemView);
-            tvMarketValue = (TextView) itemView.findViewById(R.id.player_item_jersey);
-            tvContractUntil = (TextView) itemView.findViewById(R.id.player_item_name);
-            tvDateOfBirth = (TextView) itemView.findViewById(R.id.player_item_position);
+            tvMarketValue = (TextView) itemView.findViewById(R.id.player_detail_item_market_value);
+            tvContractUntil = (TextView) itemView.findViewById(R.id.player_detail_item_contract);
+            tvDateOfBirth = (TextView) itemView.findViewById(R.id.player_detail_item_birth);
+            tvNationality = (TextView) itemView.findViewById(R.id.player_detail_item_nationality);
         }
 
         void bind(Player.PlayerExtraDetail playerExtraDetail) {
             tvMarketValue.setText(playerExtraDetail.getMarketValue());
-            tvContractUntil.setText(playerExtraDetail.getContractUntil().toString());
-            tvDateOfBirth.setText(playerExtraDetail.getDateOfBirth().toString());
+            tvContractUntil.setText(playerExtraDetail.getFormattedContractUntil());
+            tvDateOfBirth.setText(playerExtraDetail.getFormattedDateOfBirth());
+            tvNationality.setText(playerExtraDetail.getNationality());
         }
     }
 }

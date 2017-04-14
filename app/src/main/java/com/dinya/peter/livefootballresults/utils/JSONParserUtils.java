@@ -28,7 +28,9 @@ import java.util.Vector;
 
 public class JSONParserUtils {
 
+    public static final String NOT_AVAILABLE = "N/A";
     private static final String TAG = JSONParserUtils.class.getSimpleName();
+
     private JSONParserUtils() {
     }
 
@@ -41,12 +43,12 @@ public class JSONParserUtils {
             players = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 JSONObject gameJsonObject = playersArray.getJSONObject(i);
-                String nationality = "N/A";
-                int jerseyNumber = -1;
+                String nationality = NOT_AVAILABLE;
+                int jerseyNumber = Integer.MAX_VALUE;
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                Date dateOfBirth = simpleDateFormat.parse("2017-01-25");
-                Date contractUntil = simpleDateFormat.parse("2017-01-25");
-                String marketValue = "N/A";
+                Date dateOfBirth = null;
+                Date contractUntil = null;
+                String marketValue = NOT_AVAILABLE;
                 String name = gameJsonObject.getString("name");
                 String position = gameJsonObject.getString("position");
 
@@ -93,7 +95,7 @@ public class JSONParserUtils {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
                 Date date = simpleDateFormat.parse(gameJsonObject.getString("date"));
                 String matchDay = gameJsonObject.getString("matchday");
-                String homeOdds = "", drawOdds = "", awayOdds = "";
+                String homeOdds = NOT_AVAILABLE, drawOdds = NOT_AVAILABLE, awayOdds = NOT_AVAILABLE;
                 if (!gameJsonObject.isNull("odds")) {
                     homeOdds = gameJsonObject.getJSONObject("odds").getString("homeWin");
                     drawOdds = gameJsonObject.getJSONObject("odds").getString("draw");
