@@ -1,11 +1,21 @@
 package com.dinya.peter.livefootballresults.entity;
 
+import com.bignerdranch.expandablerecyclerview.model.Parent;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
+public class Player implements Parent<Player.PlayerExtraDetail> {
 
-public class Player {
+
     private String name;
+    private String position;
+    private int jerseyNumber;
+    private String nationality;
+    private List<PlayerExtraDetail> details;
+
 
     public String getName() {
         return name;
@@ -19,36 +29,53 @@ public class Player {
         return jerseyNumber;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
+
 
     public String getNationality() {
         return nationality;
     }
 
-    public Date getContractUntil() {
-        return contractUntil;
-    }
 
-    public String getMarketValue() {
-        return marketValue;
-    }
 
-    private String position;
-    private int jerseyNumber;
-    private Date dateOfBirth;
-    private String nationality;
-    private Date contractUntil;
-    private String marketValue;
 
     public Player(String name, String position, int jerseyNumber, Date dateOfBirth, String nationality, Date contractUntil, String marketValue) {
         this.name = name;
         this.position = position;
         this.jerseyNumber = jerseyNumber;
-        this.dateOfBirth = dateOfBirth;
         this.nationality = nationality;
-        this.contractUntil = contractUntil;
-        this.marketValue = marketValue;
+        details = new ArrayList<>();
+        details.add(new PlayerExtraDetail(marketValue,contractUntil,dateOfBirth));;
+    }
+
+    @Override
+    public List<PlayerExtraDetail> getChildList() {
+        return details;
+    }
+
+    @Override
+    public boolean isInitiallyExpanded() {
+        return false;
+    }
+
+    public class PlayerExtraDetail{
+        private String marketValue;
+        private Date contractUntil;
+        private Date dateOfBirth;
+
+        PlayerExtraDetail(String marketValue, Date contractUntil, Date dateOfBirth) {
+            this.marketValue = marketValue;
+            this.contractUntil = contractUntil;
+            this.dateOfBirth = dateOfBirth;
+        }
+
+        public Date getDateOfBirth() {
+            return dateOfBirth;
+        }
+        public String getMarketValue() {
+            return marketValue;
+        }
+        public Date getContractUntil() {
+            return contractUntil;
+        }
     }
 }

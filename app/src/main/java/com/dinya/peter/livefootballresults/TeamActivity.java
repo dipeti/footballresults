@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,16 +23,20 @@ import android.widget.TextView;
 import com.dinya.peter.livefootballresults.async.PlayerLoader;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.entity.Player;
+import com.dinya.peter.livefootballresults.lists.PlayerAdapter;
 import com.dinya.peter.livefootballresults.utils.ResourceUtils;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TeamActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Player>> {
 
-    ListView mListView;
-    ArrayAdapter<Player> mAdapter;
+    RecyclerView mRecyclerView;
+    PlayerAdapter mAdapter;
     ImageView mLogo;
     TextView mName;
+    List<Player> mPlayers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,35 +53,28 @@ public class TeamActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         mLogo.setImageResource(ResourceUtils.getLogoResource((int)id));
 
-        mListView = (ListView) findViewById(R.id.rv_team_players);
-        mAdapter = new ArrayAdapter<Player>(this,R.layout.player_list_item){
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                Player player = getItem(position);
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.player_list_item, parent, false);
-                }
-                TextView tvJersey = (TextView) convertView.findViewById(R.id.player_item_jersey);
-                TextView tvName = (TextView) convertView.findViewById(R.id.player_item_name);
-                TextView tvPosition = (TextView) convertView.findViewById(R.id.player_item_position);
-                TextView tvNationality = (TextView) convertView.findViewById(R.id.player_item_nationality);
-                // Populate the data into the template view using the data object
-                tvName.setText(player.getName());
-                tvJersey.setText(String.valueOf(player.getJerseyNumber()));
-                tvPosition.setText(player.getPosition());
-                tvNationality.setText(player.getNationality());
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_team_players);
+        mPlayers = new ArrayList<>();
+       // mPlayers.add(new Player("Laci","",5,new Date(System.currentTimeMillis()),"",new Date(System.currentTimeMillis()),""));
+        mAdapter = new PlayerAdapter(mPlayers);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter);
 
-                // Return the completed view to render on screen
-                return convertView;
-
-
-            }
-        };
-        mListView.setAdapter(mAdapter);
         Bundle bundle = new Bundle();
         bundle.putLong("id", id);
         getLoaderManager().initLoader(5,bundle,this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mAdapter.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAdapter.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -86,9 +84,10 @@ public class TeamActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<Player>> loader, List<Player> data) {
-        mAdapter.clear();
-        if (null != data)
-        mAdapter.addAll(data);
+        if (null != data){
+            mPlayers.addAll(data);
+            mAdapter.notifyParentRangeInserted(0,data.size());
+        }
     }
 
     @Override

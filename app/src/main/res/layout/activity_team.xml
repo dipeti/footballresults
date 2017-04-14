@@ -47,7 +47,7 @@
         app:layout_constraintTop_toTopOf="@+id/team_value_label"
         app:layout_constraintLeft_toRightOf="@+id/team_value_label"
         />
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_team_players"
             android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@+id/team_logo"
