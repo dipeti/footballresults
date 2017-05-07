@@ -19,4 +19,5 @@
     <string name="page_title_first">Finished</string>
     <string name="page_title_second">Upcoming</string>
     <string name="page_title_third">Standings</string>
+    <string name="sign_out">Sign out</string>
 </resources>
