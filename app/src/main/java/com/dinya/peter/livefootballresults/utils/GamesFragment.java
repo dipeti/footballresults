@@ -63,15 +63,25 @@ abstract public class GamesFragment extends Fragment implements
         mAdapter = new MatchAdapter(this);
         mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
         mLoaderManager = getActivity().getLoaderManager();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
+
     protected void fetchData() {
         if(!BackgroundSyncUtils.startImmediateSync(getContext()))
             mSwipeRefreshLayout.setRefreshing(false);

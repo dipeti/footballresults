@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.lists.TableAdapter;
 import com.dinya.peter.livefootballresults.sync.BackgroundSyncUtils;
+import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"Signed-in as " + user.getDisplayName(),Toast.LENGTH_SHORT).show();
                 }
             } else if(resultCode == RESULT_CANCELED){
+                finish();
+            }
+            else {
+                Toast.makeText(MainActivity.this,"You need internet to run this app.",Toast.LENGTH_SHORT).show();
                 finish();
             }
         }

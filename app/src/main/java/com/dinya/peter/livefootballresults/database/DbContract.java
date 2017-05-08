@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DbContract {
 
+    private static final String TAG = DbContract.class.getSimpleName();
     public static final String AUTHORITY = "com.dinya.peter.livefootballresults";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -93,7 +94,7 @@ public class DbContract {
     public static String[] getDateSelectionArgs(int dayDiff){
         SimpleDateFormat sdf = new SimpleDateFormat(DbContract.SQL_DATE_FORMAT, Locale.UK);
         Calendar calendar = Calendar.getInstance();
-        Log.e("asd", "getDateSelectionArgs: " +TimeUnit.DAYS.toMillis(dayDiff));
+        Log.e(TAG, "getDateSelectionArgs: " +TimeUnit.DAYS.toMillis(dayDiff));
         long dateInLong = System.currentTimeMillis()+TimeUnit.DAYS.toMillis(dayDiff);
         calendar.setTimeInMillis(dateInLong);
         String currentDate = sdf.format(calendar.getTime());
