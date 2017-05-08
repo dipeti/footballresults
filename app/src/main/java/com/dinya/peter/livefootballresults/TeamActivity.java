@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.dinya.peter.livefootballresults.async.PlayerLoader;
 import com.dinya.peter.livefootballresults.database.DbContract;
 import com.dinya.peter.livefootballresults.entity.Player;
 import com.dinya.peter.livefootballresults.lists.PlayerAdapter;
+import com.dinya.peter.livefootballresults.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,6 +133,9 @@ public class TeamActivity extends AppCompatActivity implements LoaderManager.Loa
                 mAdapter.notifyParentRangeInserted(0,data.size());
                 showPlayerData();
         } else {
+            if(!NetworkUtils.isConnected(this)){
+                Snackbar.make(mRecyclerView,"No internet connection!", Snackbar.LENGTH_LONG).show();
+            }
             showEmptyView();
         }
 
