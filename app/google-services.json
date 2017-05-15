@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "13581687112",
+    "firebase_url": "https://footballresults-253fd.firebaseio.com",
+    "project_id": "footballresults-253fd",
+    "storage_bucket": "footballresults-253fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13581687112:android:90f3b806168349b3",
+        "android_client_info": {
+          "package_name": "com.dinya.peter.livefootballresults"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "13581687112-iipq4brl2gog144f1b9n203ab4lu6gac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dinya.peter.livefootballresults",
+            "certificate_hash": "b5076a105f3e2488e1a8cc563e2ba16050402eb3"
+          }
+        },
+        {
+          "client_id": "13581687112-bi9leoflog6qd68qdvpfq6odfultkooh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDccmQhq5gNQ065alIklT0aoe-lfDodEbk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "13581687112-bi9leoflog6qd68qdvpfq6odfultkooh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
