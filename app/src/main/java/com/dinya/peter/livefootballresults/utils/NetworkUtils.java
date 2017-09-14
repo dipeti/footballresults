@@ -28,9 +28,9 @@ public class NetworkUtils {
      * URLs
      */
     private static final String BASE_API_URL = "http://api.football-data.org";
-    private static final String FIXTURES_API_PATH = "v1/competitions/426/fixtures";
-    private static final String TEAMS_API_PATH = "v1/competitions/426/teams";
-    private static final String TABLE_API_PATH = "v1/competitions/426/leagueTable";
+    private static final String FIXTURES_API_PATH = "v1/competitions/445/fixtures";
+    private static final String TEAMS_API_PATH = "v1/competitions/445/teams";
+    private static final String TABLE_API_PATH = "v1/competitions/445/leagueTable";
     private static final String PLAYERS_API_PATH  = "v1/teams/?/players";
     /**
      * Parameters

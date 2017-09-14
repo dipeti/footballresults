@@ -24,6 +24,9 @@ public class ResourceUtils {
     private static final int LIVERPOOL = 64;
     private static final int CHELSEA = 61;
     private static final int WESTHAM = 563;
+    private static final int HUDDERSFIELD = 394;
+    private static final int NEWCASTLE = 67;
+    private static final int BRIGHTON = 397;
     private ResourceUtils(){}
 
     public static int getLogoResource(int teamId){
@@ -48,6 +51,9 @@ public class ResourceUtils {
             case LEISTERCITY: return R.mipmap.logo_leicester_city;
             case BURNLEY: return R.mipmap.logo_burnley;
             case CRYTALPALACE: return R.mipmap.logo_crystal_palace;
+            case BRIGHTON: return R.drawable.logo_brighton;
+            case NEWCASTLE: return R.drawable.logo_newcastle_united;
+            case HUDDERSFIELD: return R.mipmap.logo_huddersfield;
             default: return R.mipmap.ic_launcher;
         }
     }
